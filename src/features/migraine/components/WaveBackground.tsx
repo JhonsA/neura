@@ -24,7 +24,7 @@ function WaveBackground() {
       <svg
         viewBox="0 0 390 380"
         xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="none"
+        preserveAspectRatio="xMidYMid slice"
         className="wave-stars-svg"
       >
         {STARS.map(([cx, cy, r, opacity], i) => (
