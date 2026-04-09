@@ -4,6 +4,8 @@ export type MigraineEvent = {
   createdAt: string
   /** ISO timestamp — when the crisis ended (optional for legacy events) */
   endedAt?: string
-  intensity: number
-  location: 'left' | 'right' | 'back'
+  /** null when the user skipped the form */
+  intensity: number | null
+  /** null when the user skipped the form */
+  location: 'left' | 'right' | 'back' | null
 }

@@ -81,6 +81,12 @@ function ReviewScreen() {
     navigate('/', { replace: true })
   }
 
+  const handleSkip = () => {
+    // Use the original times from the pending event — ignore any local edits
+    dispatch(commitEvent({ createdAt: pending.createdAt, endedAt: pending.endedAt, intensity: null, location: null }))
+    navigate('/', { replace: true })
+  }
+
   return (
     <main className="neura-screen" aria-label="Registrar migraña">
       <header className="neura-screen-header">
@@ -199,7 +205,7 @@ function ReviewScreen() {
         <button className="neura-btn-primary" type="button" onClick={handleSave}>
           Guardar
         </button>
-        <button className="neura-btn-ghost" type="button" onClick={handleCancel}>
+        <button className="neura-btn-ghost" type="button" onClick={handleSkip}>
           Omitir
         </button>
       </footer>

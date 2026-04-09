@@ -11,9 +11,9 @@ export type PendingEvent = {
   id?:        string
   createdAt:  string
   endedAt:    string
-  /** Pre-filled when editing an existing event */
-  intensity?: number
-  location?:  MigraineEvent['location']
+  /** Pre-filled when editing an existing event; null when previously skipped */
+  intensity?: number | null
+  location?:  MigraineEvent['location'] | null
 }
 
 type MigraineState = {
@@ -62,7 +62,7 @@ export const migraineSlice = createSlice({
      */
     commitEvent(
       state,
-      action: PayloadAction<Pick<MigraineEvent, 'intensity' | 'location'> & { createdAt: string; endedAt: string }>,
+      action: PayloadAction<{ createdAt: string; endedAt: string; intensity: number | null; location: MigraineEvent['location'] }>,
     ) {
       if (!state.pendingEvent) return
       const { id } = state.pendingEvent
