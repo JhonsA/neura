@@ -1,0 +1,288 @@
+/* ── Design tokens (palette from design sheet) ── */
+:root {
+  --c-bg:          #0f1319;
+  --c-bg-alt:      #0d111f;
+  --c-surface:     #191f37;
+  --c-surface-2:   #282d51;
+  --c-surface-3:   #3c3c6d;
+  --c-border:      rgba(114, 128, 210, 0.22);
+  --c-text:        #c8cef0;
+  --c-text-muted:  #808ab8;
+  --c-text-strong: #e8ebff;
+  --c-title:       #7b87d4;
+  --font:          'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --r-shell:       36px;
+  --r-btn:         56px;
+  --r-card:        18px;
+}
+
+/* ── Reset ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--c-bg);
+  color: var(--c-text);
+  min-height: 100svh;
+}
+
+/* ── Root centering ────────────────────────────────────── */
+#root {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  background: var(--c-bg);
+}
+
+/* ── Phone shell ───────────────────────────────────────── */
+.neura-shell {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 390px;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding: 56px 28px 32px;
+  background: linear-gradient(
+    180deg,
+    var(--c-bg) 0%,
+    var(--c-bg-alt) 100%
+  );
+}
+
+@media (min-width: 480px) {
+  #root { padding: 24px; }
+  .neura-shell {
+    min-height: 780px;
+    border-radius: var(--r-shell);
+    border: 1px solid rgba(114, 128, 210, 0.15);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
+  }
+}
+
+/* ── Hero ──────────────────────────────────────────────── */
+.neura-hero { text-align: center; flex-shrink: 0; }
+
+.neura-title {
+  margin: 0;
+  font-size: 3.2rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--c-title);
+  line-height: 1;
+}
+
+/* · ~~~ · separator */
+.neura-title-deco {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 12px auto 0;
+  color: var(--c-surface-3);
+}
+.deco-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.7;
+  display: inline-flex;
+}
+.deco-wave {
+  width: 48px; height: 12px;
+  color: var(--c-surface-3);
+  opacity: 0.8;
+}
+
+.neura-subtitle {
+  margin: 20px auto 0;
+  max-width: 280px;
+  font-size: 0.93rem;
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--c-text-muted);
+  text-align: center;
+}
+
+/* ── Actions ───────────────────────────────────────────── */
+.neura-actions {
+  margin-top: 52px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── CTA button ────────────────────────────────────────── */
+.migraine-cta {
+  position: relative;
+  width: 100%;
+  min-height: 112px;
+  padding: 32px 24px 20px;
+  border-radius: var(--r-btn);
+  border: 1px solid rgba(114, 128, 210, 0.35);
+  background: linear-gradient(
+    160deg,
+    var(--c-surface-3) 0%,
+    var(--c-surface-2) 55%,
+    var(--c-surface)   100%
+  );
+  color: var(--c-text-strong);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 12px 32px rgba(0, 0, 0, 0.45);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.migraine-cta:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 16px 38px rgba(0, 0, 0, 0.52);
+}
+.migraine-cta:active  { transform: translateY(0); }
+.migraine-cta:focus-visible {
+  outline: 2px solid rgba(114, 128, 210, 0.7);
+  outline-offset: 3px;
+}
+
+/* icon circle straddling the top border */
+.migraine-cta-icon-wrap {
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, var(--c-surface-3) 0%, var(--c-surface-2) 100%);
+  border: 1px solid rgba(114, 128, 210, 0.32);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+.migraine-cta-icon { width: 22px; height: 22px; color: #c8d0f8; }
+
+.migraine-cta-title {
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--c-text-strong);
+  letter-spacing: 0.01em;
+}
+.migraine-cta-subtitle {
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: var(--c-text-muted);
+  line-height: 1;
+  margin-top: 1px;
+}
+
+/* ── Last migraine card ────────────────────────────────── */
+.last-migraine-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--r-card);
+  border: 1px solid var(--c-border);
+  background: rgba(25, 31, 55, 0.55);
+}
+.last-migraine-icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: var(--c-surface-3);
+}
+.last-migraine-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.last-migraine-label {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--c-text-muted);
+  line-height: 1;
+}
+.last-migraine-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--c-text-strong);
+  line-height: 1.2;
+}
+.last-migraine-chevron {
+  flex-shrink: 0;
+  color: var(--c-text-muted);
+  opacity: 0.65;
+}
+
+/* ── Wave background (absolute, bottom of shell) ───────── */
+@keyframes wave-slide {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.wave-bg {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 380px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Stars — fixed layer, rendered below the wave SVG */
+.wave-stars-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Waves — static default: single tile occupies full width */
+.wave-bg-svg {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Animated: expand to double tile and slide continuously */
+.wave-bg-svg--animated {
+  width: 200%;
+  animation: wave-slide 12s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave-bg-svg--animated { animation: none; }
+}
+
+/* ── Privacy footer ────────────────────────────────────── */
+.neura-privacy {
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
+  padding-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--c-text-muted);
+  opacity: 0.75;
+}
