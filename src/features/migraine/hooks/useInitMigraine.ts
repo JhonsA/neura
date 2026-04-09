@@ -1,11 +1,3 @@
-import { useEffect } from 'react'
-
-import { useMigraineStore } from '@/features/migraine/store'
-
-export function useInitMigraine() {
-  const loadEvents = useMigraineStore((state) => state.loadEvents)
-
-  useEffect(() => {
-    loadEvents()
-  }, [loadEvents])
-}
+// Hydration is handled automatically by the Zustand persist middleware.
+// This hook is kept as an extension point for future initialization logic.
+export function useInitMigraine() {}
