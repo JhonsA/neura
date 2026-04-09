@@ -43,7 +43,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 56px 28px 32px;
+  padding: 72px 28px 40px;
   background: linear-gradient(
     180deg,
     var(--c-bg) 0%,
@@ -105,7 +105,7 @@ body {
 }
 
 .neura-subtitle {
-  margin: 20px auto 0;
+  margin: 28px auto 0;
   max-width: 280px;
   font-size: 0.93rem;
   font-weight: 400;
@@ -116,10 +116,10 @@ body {
 
 /* ── Actions ───────────────────────────────────────────── */
 .neura-actions {
-  margin-top: 52px;
+  margin-top: 64px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 32px;
   position: relative;
   z-index: 1;
   width: 100%;
@@ -204,7 +204,7 @@ body {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 14px 16px;
+  padding: 18px 20px;
   border-radius: var(--r-card);
   border: 1px solid rgba(114, 128, 210, 0.30);
   background: rgba(25, 31, 55, 0.72);
