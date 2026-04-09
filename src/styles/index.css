@@ -300,3 +300,14 @@ body {
   color: var(--c-text-muted);
   opacity: 0.75;
 }
+
+/* ── Crisis state ───────────────────────────────────────── */
+
+/* deco-wave turns soft crimson and animates faster */
+.deco-wave--crisis {
+  color: #7A3A3A;
+  opacity: 1;
+}
+.deco-wave--animated.deco-wave--crisis path {
+  animation-duration: 1.5s;
+}
