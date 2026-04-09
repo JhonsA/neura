@@ -1,19 +1,19 @@
 import { Zap, X } from 'lucide-react'
 
-import { useMigraineStore } from '@/features/migraine/store'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { endSession, startSession } from '@/features/migraine/migraineSlice'
 
 function MigraineButton() {
-  const activeSession = useMigraineStore((state) => state.activeSession)
-  const startSession  = useMigraineStore((state) => state.startSession)
-  const endSession    = useMigraineStore((state) => state.endSession)
+  const dispatch     = useAppDispatch()
+  const activeSession = useAppSelector((state) => state.migraine.activeSession)
 
   const isCrisis = activeSession !== null
 
   const handleClick = () => {
     if (isCrisis) {
-      endSession()
+      dispatch(endSession())
     } else {
-      startSession()
+      dispatch(startSession())
     }
   }
 

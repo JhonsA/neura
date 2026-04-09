@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { Activity, CalendarDays, ChevronRight } from 'lucide-react'
 
-import { useMigraineStore } from '@/features/migraine/store'
+import { useAppSelector } from '@/app/hooks'
 
 function formatElapsed(startIso: string): string {
   const elapsed = Math.max(0, Math.floor((Date.now() - Date.parse(startIso)) / 1000))
@@ -59,8 +59,8 @@ function getDuration(startIso: string, endIso?: string): string {
 }
 
 function LastMigraineCard() {
-  const activeSession = useMigraineStore((state) => state.activeSession)
-  const lastEvent     = useMigraineStore((state) => state.events[0])
+  const activeSession = useAppSelector((state) => state.migraine.activeSession)
+  const lastEvent     = useAppSelector((state) => state.migraine.events[0])
   const [, tick] = useState(0)
 
   useEffect(() => {

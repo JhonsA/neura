@@ -6,14 +6,14 @@ import {
   WaveBackground,
   useInitMigraine,
 } from '@/features/migraine'
-import { useMigraineStore } from '@/features/migraine/store'
+import { useAppSelector } from '@/app/hooks'
 
 const WAVE_ANIMATED = import.meta.env.VITE_WAVE_ANIMATED === 'true'
 
 function App() {
   useInitMigraine()
 
-  const isCrisis = useMigraineStore((state) => state.activeSession !== null)
+  const isCrisis = useAppSelector((state) => state.migraine.activeSession !== null)
 
   return (
     <main className="neura-shell" aria-label="Registro de migrañas">
