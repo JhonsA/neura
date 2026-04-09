@@ -24,7 +24,14 @@ const storage = {
 // Persist only the migraine slice — avoids double-serialization that happens
 // when wrapping a combineReducers result with persistReducer.
 const persistedMigraineReducer = persistReducer(
-  { key: 'neura-migraine', storage, version: 1 },
+  {
+    key: 'neura-migraine',
+    storage,
+    version: 1,
+    // Only persist completed events — activeSession and pendingEvent are
+    // ephemeral UI state and must never survive a reload or back-navigation.
+    whitelist: ['events'],
+  },
   migraineReducer,
 )
 

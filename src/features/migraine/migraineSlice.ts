@@ -40,6 +40,7 @@ export const migraineSlice = createSlice({
     /** Marks the start of a new crisis and records the current timestamp. */
     startSession(state) {
       state.activeSession = new Date().toISOString()
+      state.pendingEvent  = null   // discard any abandoned pending event
     },
 
     /**
@@ -53,39 +54,26 @@ export const migraineSlice = createSlice({
       state.activeSession = null
     },
 
-    /** Updates start and/or end time during the review step. */
-    updatePendingTimes(state, action: PayloadAction<Partial<PendingEvent>>) {
-      if (!state.pendingEvent) return
-      state.pendingEvent = { ...state.pendingEvent, ...action.payload }
-    },
-
     /**
-     * Commits the pending event to the log with the form data (intensity + location).
+     * Commits the pending event with all form data (times + intensity + location).
+     * All values come from the form's local state — Redux is never updated mid-flow.
      * If pendingEvent.id is set, updates the existing event instead of creating a new one.
      * Clears pendingEvent. Navigation to / is handled by the caller.
      */
     commitEvent(
       state,
-      action: PayloadAction<Pick<MigraineEvent, 'intensity' | 'location'>>,
+      action: PayloadAction<Pick<MigraineEvent, 'intensity' | 'location'> & { createdAt: string; endedAt: string }>,
     ) {
       if (!state.pendingEvent) return
-      const { id, createdAt, endedAt } = state.pendingEvent
+      const { id } = state.pendingEvent
+      const { createdAt, endedAt, intensity, location } = action.payload
       if (id) {
-        // Edit mode: update the existing event in place
         const idx = state.events.findIndex((e) => e.id === id)
         if (idx !== -1) {
-          state.events[idx] = { id, createdAt, endedAt, ...action.payload }
+          state.events[idx] = { id, createdAt, endedAt, intensity, location }
         }
       } else {
-        // New event
-        const event: MigraineEvent = {
-          id:        crypto.randomUUID(),
-          createdAt,
-          endedAt,
-          intensity: action.payload.intensity,
-          location:  action.payload.location,
-        }
-        state.events.unshift(event)
+        state.events.unshift({ id: crypto.randomUUID(), createdAt, endedAt, intensity, location })
       }
       state.pendingEvent = null
     },
@@ -116,7 +104,6 @@ export const migraineSlice = createSlice({
 export const {
   startSession,
   beginReview,
-  updatePendingTimes,
   commitEvent,
   cancelReview,
   loadEventForEdit,

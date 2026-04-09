@@ -333,6 +333,9 @@ body {
   display: flex;
   align-items: center;
   padding: 20px 24px 0;
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .neura-back-btn {
@@ -355,23 +358,33 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 32px 28px 0;
+  align-items: stretch;
+  gap: 12px;
+  padding: 28px 24px 0;
   width: 100%;
-  max-width: 450px;
+  max-width: 480px;
   margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Icon + title + duration — centered hero area */
+.neura-screen-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 4px;
 }
 
 .neura-screen-title {
-  margin: 0 0 6px;
-  font-size: 1.7rem;
+  margin: 0 0 4px;
+  font-size: 1.45rem;
   font-weight: 600;
   color: var(--c-text-strong);
   text-align: center;
 }
 
 .neura-screen-subtitle {
-  margin: 0 0 32px;
+  margin: 0;
   font-size: 0.88rem;
   color: var(--c-text-muted);
   text-align: center;
@@ -380,11 +393,12 @@ body {
 .neura-screen-footer {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 24px 28px 0;
+  gap: 8px;
+  padding: 20px 24px 0;
   width: 100%;
-  max-width: 450px;
+  max-width: 480px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 /* ── Shared buttons ────────────────────────────────────── */
@@ -424,43 +438,56 @@ body {
 .review-icon-wrap {
   display: grid;
   place-items: center;
-  width: 56px; height: 56px;
+  width: 48px; height: 48px;
   border-radius: 50%;
   background: rgba(25, 31, 55, 0.8);
   border: 1px solid var(--c-border);
   color: var(--c-title);
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 
 .review-duration {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  margin: 0 0 32px;
+  gap: 2px;
+  margin: 0;
 }
 .review-duration-label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--c-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 .review-duration-value {
-  font-size: 2.4rem;
+  font-size: 2rem;
   font-weight: 600;
   color: var(--c-text-strong);
   line-height: 1;
 }
 
-.review-times {
+/* Shared card shell for all review sections */
+.review-card {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
   background: rgba(25, 31, 55, 0.6);
   border: 1px solid var(--c-border);
   border-radius: var(--r-card);
-  padding: 20px;
+  padding: 18px;
+}
+.review-card-label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin-bottom: 14px;
+  display: block;
+}
+
+.review-times {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .review-time-row {
@@ -498,12 +525,12 @@ body {
 
 .review-edit-btn {
   align-self: center;
-  padding: 8px 20px;
+  padding: 7px 18px;
   border-radius: 10px;
   border: 1px solid var(--c-border);
   background: transparent;
   color: var(--c-title);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 500;
   cursor: pointer;
   margin-top: 4px;
@@ -513,33 +540,32 @@ body {
 
 .review-edit-done-btn {
   align-self: center;
-  padding: 8px 20px;
+  padding: 7px 18px;
   border-radius: 10px;
   border: 1px solid rgba(114, 128, 210, 0.4);
   background: rgba(60, 60, 109, 0.3);
   color: var(--c-text-strong);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 500;
   cursor: pointer;
   margin-top: 4px;
 }
 
-/* ── Crisis form screen ─────────────────────────────────── */
+/* ── Form fields (inside review-card) ──────────────────── */
 
 .form-field {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 28px;
+  gap: 10px;
 }
 
 .form-field-label {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 500;
   color: var(--c-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.09em;
 }
 
 .form-intensity-grid {
