@@ -63,11 +63,24 @@ function LastMigraineCard() {
   const lastEvent     = useAppSelector((state) => state.migraine.events[0])
   const [, tick] = useState(0)
 
+  // 1-second ticker for the live crisis counter
   useEffect(() => {
     if (!activeSession) return
-    const id = setInterval(() => tick((n) => n + 1), 1000)
+    const id = setInterval(() => tick((n) => n + 1), 1_000)
     return () => clearInterval(id)
   }, [activeSession])
+
+  // 1-minute ticker for the "hace X min" relative label.
+  // Stops automatically once the event is older than 60 min (label switches to "Hoy, HH:MM").
+  useEffect(() => {
+    if (activeSession || !lastEvent) return
+    const age = Date.now() - Date.parse(lastEvent.createdAt)
+    if (age >= 60 * 60_000) return          // already showing fixed time, no need
+    const id = setInterval(() => {
+      tick((n) => n + 1)
+    }, 60_000)
+    return () => clearInterval(id)
+  }, [activeSession, lastEvent])
 
   if (activeSession) {
     return (
