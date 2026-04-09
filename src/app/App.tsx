@@ -7,6 +7,8 @@ import {
   useInitMigraine,
 } from '@/features/migraine'
 
+const WAVE_ANIMATED = import.meta.env.VITE_WAVE_ANIMATED === 'true'
+
 function App() {
   useInitMigraine()
 
@@ -16,7 +18,7 @@ function App() {
         <h1 className="neura-title">Neura</h1>
         <span className="neura-title-deco" aria-hidden="true">
           <span className="deco-dot" />
-          <svg viewBox="0 0 48 12" className="deco-wave" aria-hidden="true">
+          <svg viewBox="0 0 48 12" className={`deco-wave${WAVE_ANIMATED ? ' deco-wave--animated' : ''}`} aria-hidden="true">
             <path
               d="M2 9 C10 3, 18 11, 24 6 C30 1, 38 9, 46 4"
               stroke="currentColor"

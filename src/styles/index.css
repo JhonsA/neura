@@ -96,6 +96,19 @@ body {
   opacity: 0.8;
 }
 
+@keyframes deco-wave-undulate {
+  0%, 100% { d: path("M2 9 C10 3, 18 11, 24 6 C30 1, 38 9, 46 4"); }
+  50%       { d: path("M2 3 C10 9, 18 1, 24 6 C30 11, 38 3, 46 8"); }
+}
+
+.deco-wave--animated path {
+  animation: deco-wave-undulate 3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deco-wave--animated path { animation: none; }
+}
+
 .neura-subtitle {
   margin: 20px auto 0;
   max-width: 280px;
