@@ -69,7 +69,7 @@ body {
   font-size: 3.2rem;
   font-weight: 500;
   letter-spacing: 1px;
-  color: #5a67d8;
+  color: var(--c-title);
   opacity: 0.9;
   line-height: 1;
 }
@@ -198,8 +198,6 @@ body {
   border-radius: var(--r-card);
   border: 1px solid rgba(114, 128, 210, 0.30);
   background: rgba(25, 31, 55, 0.72);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
 }
 .last-migraine-icon {
   flex-shrink: 0;
