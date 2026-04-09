@@ -1,17 +1,20 @@
+import { useNavigate } from 'react-router-dom'
 import { CloudLightning, CloudSun } from 'lucide-react'
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { endSession, startSession } from '@/features/migraine/migraineSlice'
+import { beginReview, startSession } from '@/features/migraine/migraineSlice'
 
 function MigraineButton() {
-  const dispatch     = useAppDispatch()
+  const dispatch      = useAppDispatch()
+  const navigate      = useNavigate()
   const activeSession = useAppSelector((state) => state.migraine.activeSession)
 
   const isCrisis = activeSession !== null
 
   const handleClick = () => {
     if (isCrisis) {
-      dispatch(endSession())
+      dispatch(beginReview())
+      navigate('/review')
     } else {
       dispatch(startSession())
     }

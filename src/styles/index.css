@@ -311,3 +311,289 @@ body {
 .deco-wave--animated.deco-wave--crisis path {
   animation-duration: 1.5s;
 }
+
+/* ── Secondary screens (Review + Form) ─────────────────── */
+
+.neura-screen {
+  width: 100%;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, var(--c-bg) 0%, var(--c-bg-alt) 100%);
+  padding: 0 0 32px;
+}
+
+.neura-screen-header {
+  display: flex;
+  align-items: center;
+  padding: 20px 24px 0;
+}
+
+.neura-back-btn {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--c-border);
+  background: rgba(25, 31, 55, 0.6);
+  color: var(--c-text-muted);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+.neura-back-btn:hover {
+  color: var(--c-text-strong);
+  background: rgba(40, 45, 81, 0.9);
+}
+
+.neura-screen-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 28px 0;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.neura-screen-title {
+  margin: 0 0 6px;
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--c-text-strong);
+  text-align: center;
+}
+
+.neura-screen-subtitle {
+  margin: 0 0 32px;
+  font-size: 0.88rem;
+  color: var(--c-text-muted);
+  text-align: center;
+}
+
+.neura-screen-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 28px 0;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+/* ── Shared buttons ────────────────────────────────────── */
+
+.neura-btn-primary {
+  width: 100%;
+  padding: 17px 24px;
+  border-radius: var(--r-btn);
+  border: 1px solid rgba(114, 128, 210, 0.35);
+  background: linear-gradient(160deg, var(--c-surface-3) 0%, var(--c-surface-2) 100%);
+  color: var(--c-text-strong);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+.neura-btn-primary:hover  { transform: translateY(-1px); }
+.neura-btn-primary:active { transform: translateY(0); }
+
+.neura-btn-ghost {
+  width: 100%;
+  padding: 14px 24px;
+  border-radius: var(--r-btn);
+  border: none;
+  background: transparent;
+  color: var(--c-text-muted);
+  font-size: 0.9rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.neura-btn-ghost:hover { color: var(--c-text); }
+
+/* ── Review screen ─────────────────────────────────────── */
+
+.review-icon-wrap {
+  display: grid;
+  place-items: center;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: rgba(25, 31, 55, 0.8);
+  border: 1px solid var(--c-border);
+  color: var(--c-title);
+  margin-bottom: 20px;
+}
+
+.review-duration {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 32px;
+}
+.review-duration-label {
+  font-size: 0.8rem;
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.review-duration-value {
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: var(--c-text-strong);
+  line-height: 1;
+}
+
+.review-times {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: rgba(25, 31, 55, 0.6);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-card);
+  padding: 20px;
+}
+
+.review-time-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.review-time-label {
+  font-size: 0.85rem;
+  color: var(--c-text-muted);
+  flex-shrink: 0;
+}
+.review-time-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--c-text-strong);
+}
+
+.review-time-input {
+  background: rgba(40, 45, 81, 0.7);
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  color: var(--c-text-strong);
+  font-family: var(--font);
+  font-size: 0.88rem;
+  padding: 8px 10px;
+  color-scheme: dark;
+  flex: 1;
+}
+.review-time-input:focus {
+  outline: 2px solid rgba(114, 128, 210, 0.5);
+  outline-offset: 2px;
+}
+
+.review-edit-btn {
+  align-self: center;
+  padding: 8px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--c-border);
+  background: transparent;
+  color: var(--c-title);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: background 0.15s;
+}
+.review-edit-btn:hover { background: rgba(60, 60, 109, 0.3); }
+
+.review-edit-done-btn {
+  align-self: center;
+  padding: 8px 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(114, 128, 210, 0.4);
+  background: rgba(60, 60, 109, 0.3);
+  color: var(--c-text-strong);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+/* ── Crisis form screen ─────────────────────────────────── */
+
+.form-field {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.form-field-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.form-intensity-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+}
+
+.form-intensity-btn {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  border: 1px solid var(--c-border);
+  background: rgba(25, 31, 55, 0.6);
+  color: var(--c-text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.form-intensity-btn:hover {
+  background: rgba(60, 60, 109, 0.5);
+  color: var(--c-text);
+}
+.form-intensity-btn--active {
+  background: linear-gradient(135deg, var(--c-surface-3), var(--c-surface-2));
+  border-color: rgba(114, 128, 210, 0.6);
+  color: var(--c-text-strong);
+}
+
+.form-intensity-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--c-text-muted);
+  padding: 0 2px;
+}
+
+.form-location-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.form-location-btn {
+  padding: 14px 8px;
+  border-radius: 14px;
+  border: 1px solid var(--c-border);
+  background: rgba(25, 31, 55, 0.6);
+  color: var(--c-text-muted);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.form-location-btn:hover {
+  background: rgba(60, 60, 109, 0.5);
+  color: var(--c-text);
+}
+.form-location-btn--active {
+  background: linear-gradient(135deg, var(--c-surface-3), var(--c-surface-2));
+  border-color: rgba(114, 128, 210, 0.6);
+  color: var(--c-text-strong);
+}
