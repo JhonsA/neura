@@ -1,4 +1,4 @@
-import { Zap, X } from 'lucide-react'
+import { CloudLightning, CloudSun } from 'lucide-react'
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { endSession, startSession } from '@/features/migraine/migraineSlice'
@@ -25,8 +25,8 @@ function MigraineButton() {
     >
       <span className="migraine-cta-icon-wrap" aria-hidden="true">
         {isCrisis
-          ? <X className="migraine-cta-icon" strokeWidth={2.2} />
-          : <Zap className="migraine-cta-icon" strokeWidth={2.2} />}
+          ? <CloudSun className="migraine-cta-icon" strokeWidth={2.2} />
+          : <CloudLightning className="migraine-cta-icon" strokeWidth={2.2} />}
       </span>
       <span className="migraine-cta-title">
         {isCrisis ? 'Terminar' : 'Tengo migraña'}
