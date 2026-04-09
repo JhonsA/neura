@@ -7,8 +7,13 @@ import type { MigraineEvent } from './types'
 
 /** Times held during the review + form flow, before final commit */
 export type PendingEvent = {
-  createdAt: string
-  endedAt:   string
+  /** Set when editing an already-saved event; absent when recording a new one */
+  id?:        string
+  createdAt:  string
+  endedAt:    string
+  /** Pre-filled when editing an existing event */
+  intensity?: number
+  location?:  MigraineEvent['location']
 }
 
 type MigraineState = {
@@ -56,6 +61,7 @@ export const migraineSlice = createSlice({
 
     /**
      * Commits the pending event to the log with the form data (intensity + location).
+     * If pendingEvent.id is set, updates the existing event instead of creating a new one.
      * Clears pendingEvent. Navigation to / is handled by the caller.
      */
     commitEvent(
@@ -63,20 +69,46 @@ export const migraineSlice = createSlice({
       action: PayloadAction<Pick<MigraineEvent, 'intensity' | 'location'>>,
     ) {
       if (!state.pendingEvent) return
-      const event: MigraineEvent = {
-        id:        crypto.randomUUID(),
-        createdAt: state.pendingEvent.createdAt,
-        endedAt:   state.pendingEvent.endedAt,
-        intensity: action.payload.intensity,
-        location:  action.payload.location,
+      const { id, createdAt, endedAt } = state.pendingEvent
+      if (id) {
+        // Edit mode: update the existing event in place
+        const idx = state.events.findIndex((e) => e.id === id)
+        if (idx !== -1) {
+          state.events[idx] = { id, createdAt, endedAt, ...action.payload }
+        }
+      } else {
+        // New event
+        const event: MigraineEvent = {
+          id:        crypto.randomUUID(),
+          createdAt,
+          endedAt,
+          intensity: action.payload.intensity,
+          location:  action.payload.location,
+        }
+        state.events.unshift(event)
       }
-      state.events.unshift(event)
       state.pendingEvent = null
     },
 
-    /** Cancels the review flow and discards the pending event. */
+    /** Cancels the review/edit flow and discards the pending event. */
     cancelReview(state) {
       state.pendingEvent = null
+    },
+
+    /**
+     * Loads an existing saved event into pendingEvent so the user can
+     * edit its times and intensity/location via the Review + Form screens.
+     */
+    loadEventForEdit(state, action: PayloadAction<string>) {
+      const event = state.events.find((e) => e.id === action.payload)
+      if (!event) return
+      state.pendingEvent = {
+        id:        event.id,
+        createdAt: event.createdAt,
+        endedAt:   event.endedAt ?? new Date().toISOString(),
+        intensity: event.intensity,
+        location:  event.location,
+      }
     },
   },
 })
@@ -87,6 +119,7 @@ export const {
   updatePendingTimes,
   commitEvent,
   cancelReview,
+  loadEventForEdit,
 } = migraineSlice.actions
 
 export default migraineSlice.reducer

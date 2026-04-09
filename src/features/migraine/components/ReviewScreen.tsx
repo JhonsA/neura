@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Clock } from 'lucide-react'
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { cancelReview, updatePendingTimes } from '@/features/migraine/migraineSlice'
+import { cancelReview, commitEvent, updatePendingTimes } from '@/features/migraine/migraineSlice'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -55,9 +55,19 @@ function ReviewScreen() {
   if (!pending) return null
 
   const duration = formatDuration(pending.createdAt, pending.endedAt)
+  const isEdit = Boolean(pending.id)
 
   const handleCancel = () => {
-    dispatch(cancelReview())
+    if (isEdit) {
+      // Editing an existing event — discard changes
+      dispatch(cancelReview())
+    } else {
+      // New event — save with defaults so the record is never lost
+      dispatch(commitEvent({
+        intensity: pending.intensity ?? 5,
+        location:  pending.location  ?? 'left',
+      }))
+    }
     navigate('/', { replace: true })
   }
 
@@ -78,7 +88,7 @@ function ReviewScreen() {
           <Clock size={28} strokeWidth={1.5} />
         </div>
 
-        <h1 className="neura-screen-title">Migraña registrada</h1>
+        <h1 className="neura-screen-title">{isEdit ? 'Editar migraña' : 'Migraña registrada'}</h1>
 
         <p className="review-duration" aria-label={`Duración: ${duration}`}>
           <span className="review-duration-label">Duración</span>

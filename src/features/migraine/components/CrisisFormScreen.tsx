@@ -21,8 +21,8 @@ function CrisisFormScreen() {
   const dispatch = useAppDispatch()
   const pending  = useAppSelector((state) => state.migraine.pendingEvent)
 
-  const [intensity, setIntensity] = useState<number>(5)
-  const [location,  setLocation]  = useState<Location>('left')
+  const [intensity, setIntensity] = useState<number>(pending?.intensity ?? 5)
+  const [location,  setLocation]  = useState<Location>(pending?.location  ?? 'left')
 
   useEffect(() => {
     if (!pending) navigate('/', { replace: true })

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { Activity, CalendarDays, ChevronRight } from 'lucide-react'
 
-import { useAppSelector } from '@/app/hooks'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { loadEventForEdit } from '@/features/migraine/migraineSlice'
 
 function formatElapsed(startIso: string): string {
   const elapsed = Math.max(0, Math.floor((Date.now() - Date.parse(startIso)) / 1000))
@@ -59,6 +61,8 @@ function getDuration(startIso: string, endIso?: string): string {
 }
 
 function LastMigraineCard() {
+  const navigate      = useNavigate()
+  const dispatch      = useAppDispatch()
   const activeSession = useAppSelector((state) => state.migraine.activeSession)
   const lastEvent     = useAppSelector((state) => state.migraine.events[0])
   const [, tick] = useState(0)
@@ -115,8 +119,21 @@ function LastMigraineCard() {
   const smartTime = getSmartTime(lastEvent.createdAt)
   const duration  = getDuration(lastEvent.createdAt, lastEvent.endedAt)
 
+  const handleEditClick = () => {
+    dispatch(loadEventForEdit(lastEvent.id))
+    navigate('/review')
+  }
+
   return (
-    <article className="last-migraine-card" aria-live="polite">
+    <article
+      className="last-migraine-card"
+      aria-live="polite"
+      role="button"
+      tabIndex={0}
+      onClick={handleEditClick}
+      onKeyDown={(e) => e.key === 'Enter' && handleEditClick()}
+      aria-label="Editar última migraña"
+    >
       <span className="last-migraine-icon" aria-hidden="true">
         <CalendarDays size={24} strokeWidth={1.5} />
       </span>
