@@ -4,12 +4,8 @@ import { ArrowLeft } from 'lucide-react'
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { cancelReview, commitEvent } from '@/features/migraine/migraineSlice'
-import type { MigraineEvent } from '@/features/migraine/types'
+import type { Location } from '@/features/migraine/types'
 import WaveBackground from './WaveBackground'
-
-type Location = MigraineEvent['location']
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function formatDuration(startIso: string, endIso: string): string {
   const secs = Math.max(0, Math.round((Date.parse(endIso) - Date.parse(startIso)) / 1000))
@@ -43,9 +39,14 @@ function formatDisplay(iso: string): string {
 const INTENSITIES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const
 
 const LOCATIONS: { value: Location; label: string }[] = [
-  { value: 'left',  label: 'Izquierda' },
-  { value: 'right', label: 'Derecha'   },
-  { value: 'back',  label: 'Posterior' },
+  { value: 'left',     label: 'Izquierda'      },
+  { value: 'right',    label: 'Derecha'         },
+  { value: 'both',     label: 'Ambos lados'     },
+  { value: 'temple',   label: 'Sien'            },
+  { value: 'eye',      label: 'Ojo'             },
+  { value: 'forehead', label: 'Frente'          },
+  { value: 'back',     label: 'Parte posterior' },
+  { value: 'whole',    label: 'Toda la cabeza'  },
 ]
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -59,7 +60,13 @@ function ReviewScreen() {
   const [startTime,   setStartTime]   = useState(pending?.createdAt ?? '')
   const [endTime,     setEndTime]     = useState(pending?.endedAt   ?? '')
   const [intensity,   setIntensity]   = useState<number>(pending?.intensity ?? 5)
-  const [location,    setLocation]    = useState<Location>(pending?.location ?? 'left')
+  const [locations,   setLocations]   = useState<Location[]>(pending?.location ?? [])
+
+  const toggleLocation = (loc: Location) => {
+    setLocations((prev) =>
+      prev.includes(loc) ? prev.filter((l) => l !== loc) : [...prev, loc]
+    )
+  }
 
   // Guard: redirect if there's no pending event (e.g. direct URL access)
   useEffect(() => {
@@ -77,7 +84,7 @@ function ReviewScreen() {
   }
 
   const handleSave = () => {
-    dispatch(commitEvent({ createdAt: startTime, endedAt: endTime, intensity, location }))
+    dispatch(commitEvent({ createdAt: startTime, endedAt: endTime, intensity, location: locations.length > 0 ? locations : null }))
     navigate('/', { replace: true })
   }
 
@@ -163,9 +170,9 @@ function ReviewScreen() {
                 <button
                   key={value}
                   type="button"
-                  className={`form-location-btn${location === value ? ' form-location-btn--active' : ''}`}
-                  onClick={() => setLocation(value)}
-                  aria-pressed={location === value}
+                  className={`form-location-btn${locations.includes(value) ? ' form-location-btn--active' : ''}`}
+                  onClick={() => toggleLocation(value)}
+                  aria-pressed={locations.includes(value)}
                 >
                   {label}
                 </button>

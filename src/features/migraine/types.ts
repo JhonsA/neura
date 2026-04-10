@@ -1,3 +1,13 @@
+export type Location =
+  | 'left'
+  | 'right'
+  | 'both'
+  | 'temple'
+  | 'eye'
+  | 'forehead'
+  | 'back'
+  | 'whole'
+
 export type MigraineEvent = {
   id: string
   /** ISO timestamp — when the crisis started */
@@ -7,5 +17,5 @@ export type MigraineEvent = {
   /** null when the user skipped the form */
   intensity: number | null
   /** null when the user skipped the form */
-  location: 'left' | 'right' | 'back' | null
+  location: Location[] | null
 }
