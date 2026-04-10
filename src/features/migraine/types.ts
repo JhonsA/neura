@@ -8,6 +8,8 @@ export type Location =
   | 'back'
   | 'whole'
 
+export type Medication = 'ibuprofen' | 'paracetamol' | 'triptan' | 'other'
+
 export type MigraineEvent = {
   id: string
   /** ISO timestamp — when the crisis started */
@@ -18,4 +20,8 @@ export type MigraineEvent = {
   intensity: number | null
   /** null when the user skipped the form */
   location: Location[] | null
+  /** false = took nothing, array = what was taken, null = skipped */
+  medication: Medication[] | false | null
+  /** free text when 'other' is selected */
+  medicationOther: string | null
 }

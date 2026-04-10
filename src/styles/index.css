@@ -676,3 +676,62 @@ body {
   border-color: rgba(114, 128, 210, 0.6);
   color: var(--c-text-strong);
 }
+
+/* ── Medication section ────────────────────────────────── */
+
+.form-yesno-group {
+  display: flex;
+  gap: 10px;
+}
+
+.form-yesno-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid var(--c-border);
+  background: rgba(25, 31, 55, 0.6);
+  color: var(--c-text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.form-yesno-btn:hover {
+  background: rgba(60, 60, 109, 0.5);
+  color: var(--c-text);
+}
+.form-yesno-btn--active {
+  background: linear-gradient(135deg, var(--c-surface-3), var(--c-surface-2));
+  border-color: rgba(114, 128, 210, 0.6);
+  color: var(--c-text-strong);
+}
+
+.form-med-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.review-form-sublabel {
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--c-text-muted);
+}
+
+.form-med-other-input {
+  background: rgba(40, 45, 81, 0.55);
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  color: var(--c-text-strong);
+  font-family: var(--font);
+  font-size: 0.9rem;
+  padding: 9px 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.form-med-other-input::placeholder { color: var(--c-text-muted); opacity: 0.6; }
+.form-med-other-input:focus {
+  outline: 2px solid rgba(114, 128, 210, 0.5);
+  outline-offset: 2px;
+}

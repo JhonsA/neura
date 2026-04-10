@@ -62,18 +62,25 @@ export const migraineSlice = createSlice({
      */
     commitEvent(
       state,
-      action: PayloadAction<{ createdAt: string; endedAt: string; intensity: number | null; location: MigraineEvent['location'] }>,
+      action: PayloadAction<{
+        createdAt: string
+        endedAt: string
+        intensity: number | null
+        location: MigraineEvent['location']
+        medication: MigraineEvent['medication']
+        medicationOther: MigraineEvent['medicationOther']
+      }>,
     ) {
       if (!state.pendingEvent) return
       const { id } = state.pendingEvent
-      const { createdAt, endedAt, intensity, location } = action.payload
+      const { createdAt, endedAt, intensity, location, medication, medicationOther } = action.payload
       if (id) {
         const idx = state.events.findIndex((e) => e.id === id)
         if (idx !== -1) {
-          state.events[idx] = { id, createdAt, endedAt, intensity, location }
+          state.events[idx] = { id, createdAt, endedAt, intensity, location, medication, medicationOther }
         }
       } else {
-        state.events.unshift({ id: crypto.randomUUID(), createdAt, endedAt, intensity, location })
+        state.events.unshift({ id: crypto.randomUUID(), createdAt, endedAt, intensity, location, medication, medicationOther })
       }
       state.pendingEvent = null
     },

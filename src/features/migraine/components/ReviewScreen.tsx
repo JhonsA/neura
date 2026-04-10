@@ -4,7 +4,7 @@ import { ArrowLeft } from 'lucide-react'
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { commitEvent } from '@/features/migraine/migraineSlice'
-import type { Location } from '@/features/migraine/types'
+import type { Location, Medication } from '@/features/migraine/types'
 import WaveBackground from './WaveBackground'
 
 function formatDuration(startIso: string, endIso: string): string {
@@ -47,6 +47,13 @@ const LOCATIONS: { value: Location; label: string }[] = [
   { value: 'whole',    label: 'Toda la cabeza'  },
 ]
 
+const MEDICATIONS: { value: Medication; label: string }[] = [
+  { value: 'ibuprofen',   label: 'Ibuprofeno'  },
+  { value: 'paracetamol', label: 'Paracetamol' },
+  { value: 'triptan',     label: 'Triptán'     },
+  { value: 'other',       label: 'Otro'        },
+]
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 function ReviewScreen() {
@@ -58,11 +65,20 @@ function ReviewScreen() {
   const [startTime,   setStartTime]   = useState(pending?.createdAt ?? '')
   const [endTime,     setEndTime]     = useState(pending?.endedAt   ?? '')
   const [intensity,   setIntensity]   = useState<number>(pending?.intensity ?? 5)
-  const [locations,   setLocations]   = useState<Location[]>(pending?.location ?? [])
+  const [locations,      setLocations]      = useState<Location[]>(pending?.location ?? [])
+  const [tookMed,        setTookMed]        = useState<boolean | null>(null)
+  const [medications,    setMedications]    = useState<Medication[]>([])
+  const [medOther,       setMedOther]       = useState('')
 
   const toggleLocation = (loc: Location) => {
     setLocations((prev) =>
       prev.includes(loc) ? prev.filter((l) => l !== loc) : [...prev, loc]
+    )
+  }
+
+  const toggleMedication = (med: Medication) => {
+    setMedications((prev) =>
+      prev.includes(med) ? prev.filter((m) => m !== med) : [...prev, med]
     )
   }
 
@@ -77,13 +93,22 @@ function ReviewScreen() {
   const duration = formatDuration(startTime, endTime)
 
   const handleSave = () => {
-    dispatch(commitEvent({ createdAt: startTime, endedAt: endTime, intensity, location: locations.length > 0 ? locations : null }))
+    const medicationPayload = tookMed === null ? null
+      : tookMed === false ? false
+      : medications.length > 0 ? medications : null
+    dispatch(commitEvent({
+      createdAt: startTime,
+      endedAt: endTime,
+      intensity,
+      location: locations.length > 0 ? locations : null,
+      medication: medicationPayload,
+      medicationOther: medications.includes('other') ? medOther || null : null,
+    }))
     navigate('/', { replace: true })
   }
 
   const handleSkip = () => {
-    // Use the original times from the pending event — ignore any local edits
-    dispatch(commitEvent({ createdAt: pending.createdAt, endedAt: pending.endedAt, intensity: null, location: null }))
+    dispatch(commitEvent({ createdAt: pending.createdAt, endedAt: pending.endedAt, intensity: null, location: null, medication: null, medicationOther: null }))
     navigate('/', { replace: true })
   }
 
@@ -170,6 +195,59 @@ function ReviewScreen() {
                 </button>
               ))}
             </div>
+          </div>
+
+          <div className="review-form-divider" />
+
+          <div className="review-form-section">
+            <span className="review-form-label">¿Tomaste algo?</span>
+            <div className="form-yesno-group" role="group" aria-label="¿Tomaste medicación?">
+              <button
+                type="button"
+                className={`form-yesno-btn${tookMed === true ? ' form-yesno-btn--active' : ''}`}
+                onClick={() => setTookMed(true)}
+                aria-pressed={tookMed === true}
+              >
+                Sí
+              </button>
+              <button
+                type="button"
+                className={`form-yesno-btn${tookMed === false ? ' form-yesno-btn--active' : ''}`}
+                onClick={() => setTookMed(false)}
+                aria-pressed={tookMed === false}
+              >
+                No
+              </button>
+            </div>
+
+            {tookMed === true && (
+              <div className="form-med-section">
+                <span className="review-form-sublabel">¿Qué tomaste?</span>
+                <div className="form-location-grid" role="group" aria-label="Medicación tomada">
+                  {MEDICATIONS.map(({ value, label }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={`form-location-btn${medications.includes(value) ? ' form-location-btn--active' : ''}`}
+                      onClick={() => toggleMedication(value)}
+                      aria-pressed={medications.includes(value)}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                {medications.includes('other') && (
+                  <input
+                    className="form-med-other-input"
+                    type="text"
+                    placeholder="Escribir medicamento..."
+                    value={medOther}
+                    onChange={(e) => setMedOther(e.target.value)}
+                    maxLength={80}
+                  />
+                )}
+              </div>
+            )}
           </div>
 
         </div>
