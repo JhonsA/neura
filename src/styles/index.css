@@ -366,7 +366,7 @@ body {
 .neura-screen-header {
   display: flex;
   align-items: center;
-  padding: 12px 24px 0;
+  padding: 8px 24px 0;
   max-width: 480px;
   width: 100%;
   margin: 0 auto;
@@ -396,7 +396,7 @@ body {
   flex-direction: column;
   align-items: stretch;
   gap: 12px;
-  padding: 8px 24px 0;
+  padding: 4px 24px 0;
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
