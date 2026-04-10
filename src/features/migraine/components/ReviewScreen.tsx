@@ -66,9 +66,15 @@ function ReviewScreen() {
   const [endTime,     setEndTime]     = useState(pending?.endedAt   ?? '')
   const [intensity,   setIntensity]   = useState<number>(pending?.intensity ?? 5)
   const [locations,      setLocations]      = useState<Location[]>(pending?.location ?? [])
-  const [tookMed,        setTookMed]        = useState<boolean | null>(null)
-  const [medications,    setMedications]    = useState<Medication[]>([])
-  const [medOther,       setMedOther]       = useState('')
+  const [tookMed,        setTookMed]        = useState<boolean | null>(
+    pending?.medication === undefined || pending?.medication === null ? null
+    : pending.medication === false ? false
+    : true
+  )
+  const [medications,    setMedications]    = useState<Medication[]>(
+    Array.isArray(pending?.medication) ? pending.medication : []
+  )
+  const [medOther,       setMedOther]       = useState(pending?.medicationOther ?? '')
 
   const toggleLocation = (loc: Location) => {
     setLocations((prev) =>

@@ -8,12 +8,14 @@ import type { MigraineEvent } from './types'
 /** Times held during the review + form flow, before final commit */
 export type PendingEvent = {
   /** Set when editing an already-saved event; absent when recording a new one */
-  id?:        string
-  createdAt:  string
-  endedAt:    string
+  id?:              string
+  createdAt:        string
+  endedAt:          string
   /** Pre-filled when editing an existing event; null when previously skipped */
-  intensity?: number | null
-  location?:  MigraineEvent['location'] | null
+  intensity?:       number | null
+  location?:        MigraineEvent['location'] | null
+  medication?:      MigraineEvent['medication'] | null
+  medicationOther?: MigraineEvent['medicationOther'] | null
 }
 
 type MigraineState = {
@@ -98,11 +100,13 @@ export const migraineSlice = createSlice({
       const event = state.events.find((e) => e.id === action.payload)
       if (!event) return
       state.pendingEvent = {
-        id:        event.id,
-        createdAt: event.createdAt,
-        endedAt:   event.endedAt ?? new Date().toISOString(),
-        intensity: event.intensity,
-        location:  event.location,
+        id:              event.id,
+        createdAt:       event.createdAt,
+        endedAt:         event.endedAt ?? new Date().toISOString(),
+        intensity:       event.intensity,
+        location:        event.location,
+        medication:      event.medication,
+        medicationOther: event.medicationOther,
       }
     },
   },
