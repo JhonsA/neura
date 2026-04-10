@@ -339,6 +339,135 @@ body {
   opacity: 0.75;
 }
 
+/* ── History link ───────────────────────────────────────── */
+.neura-history-link {
+  align-self: flex-end;
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--c-text-muted);
+  opacity: 0.6;
+  text-decoration: none;
+  transition: opacity 0.15s;
+  position: relative;
+  z-index: 1;
+}
+.neura-history-link:hover { opacity: 1; }
+
+/* ── History screen ─────────────────────────────────────── */
+.history-empty {
+  text-align: center;
+  color: var(--c-text-muted);
+  font-size: 0.9rem;
+  padding: 32px 0;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.history-card {
+  background: rgba(25, 31, 55, 0.6);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-card);
+  padding: 14px 16px;
+}
+
+.history-card-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.history-card-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.history-card-date {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--c-text-muted);
+  text-transform: capitalize;
+}
+
+.history-card-time {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--c-text-strong);
+}
+
+.history-card-duration {
+  font-size: 0.75rem;
+  color: var(--c-text-muted);
+}
+
+.history-card-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.history-card-intensity {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.history-card-edit-btn {
+  display: grid;
+  place-items: center;
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--c-border);
+  background: transparent;
+  color: var(--c-text-muted);
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s, background 0.15s;
+}
+.history-card-edit-btn:hover {
+  opacity: 1;
+  background: rgba(40, 45, 81, 0.8);
+}
+
+.history-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.history-page-btn {
+  display: grid;
+  place-items: center;
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--c-border);
+  background: transparent;
+  color: var(--c-text-muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.history-page-btn:hover:not(:disabled) {
+  background: rgba(40, 45, 81, 0.8);
+  color: var(--c-text-strong);
+}
+.history-page-btn:disabled { opacity: 0.25; cursor: default; }
+
+.history-page-info {
+  font-size: 0.82rem;
+  color: var(--c-text-muted);
+  min-width: 40px;
+  text-align: center;
+}
+
 /* ── Crisis state ───────────────────────────────────────── */
 
 /* deco-wave turns soft crimson and animates faster */

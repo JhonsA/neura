@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
@@ -58,6 +58,8 @@ const MEDICATIONS: { value: Medication; label: string }[] = [
 
 function ReviewScreen() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const returnTo = (location.state as { returnTo?: string } | null)?.returnTo ?? '/'
   const dispatch = useAppDispatch()
   const pending  = useAppSelector((state) => state.migraine.pendingEvent)
 
@@ -90,8 +92,8 @@ function ReviewScreen() {
 
   // Guard: redirect if there's no pending event (e.g. direct URL access)
   useEffect(() => {
-    if (!pending) navigate('/', { replace: true })
-  }, [pending, navigate])
+    if (!pending) navigate(returnTo, { replace: true })
+  }, [pending, navigate, returnTo])
 
   if (!pending) return null
 
@@ -112,18 +114,16 @@ function ReviewScreen() {
       medication: medicationPayload,
       medicationOther: hasOtherText ? medOther.trim() : null,
     }))
-    navigate('/', { replace: true })
+    navigate(returnTo, { replace: true })
   }
 
   const handleSkip = () => {
     if (isEdit) {
-      // Editing: just cancel, preserve the existing event untouched
       dispatch(cancelReview())
     } else {
-      // New record: save with no details
       dispatch(commitEvent({ createdAt: pending.createdAt, endedAt: pending.endedAt, intensity: null, location: null, medication: null, medicationOther: null }))
     }
-    navigate('/', { replace: true })
+    navigate(returnTo, { replace: true })
   }
 
   return (

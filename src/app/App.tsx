@@ -1,4 +1,5 @@
 import { ShieldCheck } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 import {
   LastMigraineCard,
@@ -44,6 +45,7 @@ function App() {
       <section className="neura-actions" aria-label="Acciones principales">
         <MigraineButton />
         <LastMigraineCard />
+        <Link to="/history" className="neura-history-link">Historial de migrañas</Link>
       </section>
 
       <WaveBackground />
