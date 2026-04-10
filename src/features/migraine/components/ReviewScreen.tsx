@@ -41,16 +41,25 @@ const INTENSITY_LABEL: Record<number, string> = {
   10: 'Insoportable',
 }
 
-const LOCATIONS: { value: Location; label: string }[] = [
-  { value: 'left',     label: 'Izquierda'      },
-  { value: 'right',    label: 'Derecha'         },
-  { value: 'both',     label: 'Ambos lados'     },
+const LOCATIONS_SIDE: { value: Location; label: string }[] = [
+  { value: 'left',  label: 'Izquierda' },
+  { value: 'right', label: 'Derecha'   },
+  { value: 'both',  label: 'Ambos'     },
+]
+
+const LOCATIONS_ZONE: { value: Location; label: string }[] = [
   { value: 'temple',   label: 'Sien'            },
   { value: 'eye',      label: 'Ojo'             },
   { value: 'forehead', label: 'Frente'          },
   { value: 'back',     label: 'Parte posterior' },
   { value: 'whole',    label: 'Toda la cabeza'  },
 ]
+
+function intensityColor(n: number): string {
+  if (n <= 3) return '#6db8a0'
+  if (n <= 6) return '#d4a84b'
+  return '#c26b6b'
+}
 
 const MEDICATIONS: { value: Medication; label: string }[] = [
   { value: 'ibuprofen',   label: 'Ibuprofeno'  },
@@ -98,10 +107,28 @@ function ReviewScreen() {
     (source && 'medicationOther' in source) ? (source.medicationOther ?? '') : ''
   )
 
+  const SIDE_VALUES = LOCATIONS_SIDE.map((l) => l.value)
+
   const toggleLocation = (loc: Location) => {
-    setLocations((prev) =>
-      prev.includes(loc) ? prev.filter((l) => l !== loc) : [...prev, loc]
-    )
+    const isSide = SIDE_VALUES.includes(loc)
+    setLocations((prev) => {
+      if (isSide) {
+        // Single-select: replace any existing side, keep zones
+        const withoutSides = prev.filter((l) => !SIDE_VALUES.includes(l))
+        return prev.includes(loc) ? withoutSides : [...withoutSides, loc]
+      }
+      // Zone logic: "whole" is exclusive within zones
+      const withoutZones = prev.filter((l) => SIDE_VALUES.includes(l))
+      if (loc === 'whole') {
+        // selecting "whole" clears all other zones
+        return prev.includes('whole') ? withoutZones : [...withoutZones, 'whole']
+      }
+      // selecting any other zone clears "whole"
+      const zonesWithoutWhole = prev.filter((l) => l !== 'whole' && !SIDE_VALUES.includes(l))
+      return zonesWithoutWhole.includes(loc)
+        ? [...withoutZones, ...zonesWithoutWhole.filter((l) => l !== loc)]
+        : [...withoutZones, ...zonesWithoutWhole, loc]
+    })
   }
 
   const toggleMedication = (med: Medication) => {
@@ -185,15 +212,14 @@ function ReviewScreen() {
       <section className="neura-screen-body">
         {/* ── Hero ── */}
         <div className="neura-screen-hero">
-          <h1 className="neura-screen-title">{isEdit ? 'Editar migraña' : 'Migraña registrada'}</h1>
-          <p className="review-duration-badge" aria-label={`Duración: ${duration}`}>{duration}</p>
+          <h1 className="neura-screen-title">Detalles de la migraña</h1>
         </div>
 
         {/* ── Formulario unificado ── */}
         <div className="review-form">
 
           <div className="review-form-section">
-            <span className="review-form-label">Duración del episodio</span>
+            <span className="review-form-label">¿Cuánto duró?</span>
             <div className="review-times">
               <label className="review-time-row">
                 <span className="review-time-label">Inicio</span>
@@ -225,6 +251,9 @@ function ReviewScreen() {
                   </span>
                 )}
               </label>
+              {!hasDateErrors && duration && (
+                <p className="review-duration-inline">Duración: <strong>{duration}</strong></p>
+              )}
             </div>
           </div>
 
@@ -246,7 +275,7 @@ function ReviewScreen() {
               ))}
             </div>
             <div className="form-intensity-labels">
-              <span className="form-intensity-current">{INTENSITY_LABEL[intensity]}</span>
+              <span className="form-intensity-current" style={{ color: intensityColor(intensity) }}>{INTENSITY_LABEL[intensity]}</span>
             </div>
           </div>
 
@@ -254,8 +283,25 @@ function ReviewScreen() {
 
           <div className="review-form-section">
             <span className="review-form-label">¿Dónde sentiste el dolor?</span>
-            <div className="form-location-grid" role="group" aria-label="Ubicación del dolor">
-              {LOCATIONS.map(({ value, label }) => (
+
+            <span className="review-form-sublabel">Lado</span>
+            <div className="form-location-grid" role="group" aria-label="Lado del dolor">
+              {LOCATIONS_SIDE.map(({ value, label }) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={`form-location-btn${locations.includes(value) ? ' form-location-btn--active' : ''}`}
+                  onClick={() => toggleLocation(value)}
+                  aria-pressed={locations.includes(value)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <span className="review-form-sublabel" style={{ marginTop: '10px' }}>Zona</span>
+            <div className="form-location-grid" role="group" aria-label="Zona del dolor">
+              {LOCATIONS_ZONE.map(({ value, label }) => (
                 <button
                   key={value}
                   type="button"

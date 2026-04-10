@@ -727,6 +727,16 @@ body {
   color: var(--c-text-muted);
 }
 
+.review-duration-inline {
+  margin: 8px 0 0;
+  font-size: 0.8rem;
+  color: var(--c-text-muted);
+}
+.review-duration-inline strong {
+  color: var(--c-text-strong);
+  font-weight: 600;
+}
+
 /* ── Unified form card ─────────────────────────────────── */
 .review-form {
   width: 100%;
