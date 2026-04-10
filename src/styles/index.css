@@ -523,26 +523,27 @@ body {
   color: var(--c-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.09em;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
   display: block;
 }
 
 .review-times {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .review-time-row {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  gap: 2px;
 }
 .review-time-label {
-  font-size: 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 500;
   color: var(--c-text-muted);
-  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
 }
 .review-time-value {
   font-size: 0.95rem;
@@ -551,15 +552,16 @@ body {
 }
 
 .review-time-input {
-  background: rgba(40, 45, 81, 0.7);
+  background: rgba(40, 45, 81, 0.55);
   border: 1px solid var(--c-border);
-  border-radius: 10px;
+  border-radius: 8px;
   color: var(--c-text-strong);
   font-family: var(--font);
-  font-size: 0.88rem;
-  padding: 8px 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 7px 10px;
   color-scheme: dark;
-  flex: 1;
+  width: 100%;
 }
 .review-time-input:focus {
   outline: 2px solid rgba(114, 128, 210, 0.5);
@@ -580,19 +582,6 @@ body {
   transition: background 0.15s;
 }
 .review-edit-btn:hover { background: rgba(60, 60, 109, 0.3); }
-
-.review-edit-done-btn {
-  align-self: center;
-  padding: 7px 18px;
-  border-radius: 10px;
-  border: 1px solid rgba(114, 128, 210, 0.4);
-  background: rgba(60, 60, 109, 0.3);
-  color: var(--c-text-strong);
-  font-size: 0.82rem;
-  font-weight: 500;
-  cursor: pointer;
-  margin-top: 4px;
-}
 
 /* ── Form fields (inside review-card) ──────────────────── */
 

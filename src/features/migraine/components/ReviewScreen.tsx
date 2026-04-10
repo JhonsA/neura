@@ -60,7 +60,6 @@ function ReviewScreen() {
   const [endTime,     setEndTime]     = useState(pending?.endedAt   ?? '')
   const [intensity,   setIntensity]   = useState<number>(pending?.intensity ?? 5)
   const [location,    setLocation]    = useState<Location>(pending?.location ?? 'left')
-  const [editingTime, setEditingTime] = useState(false)
 
   // Guard: redirect if there's no pending event (e.g. direct URL access)
   useEffect(() => {
@@ -113,47 +112,26 @@ function ReviewScreen() {
         <div className="review-card">
           <span className="review-card-label">Tiempos</span>
           <div className="review-times">
-            {editingTime ? (
-              <>
-                <label className="review-time-row">
-                  <span className="review-time-label">Inicio</span>
-                  <input
-                    className="review-time-input"
-                    type="datetime-local"
-                    defaultValue={toDatetimeLocal(startTime)}
-                    max={toDatetimeLocal(endTime)}
-                    onChange={(e) => setStartTime(fromDatetimeLocal(e.target.value))}
-                  />
-                </label>
-                <label className="review-time-row">
-                  <span className="review-time-label">Fin</span>
-                  <input
-                    className="review-time-input"
-                    type="datetime-local"
-                    defaultValue={toDatetimeLocal(endTime)}
-                    min={toDatetimeLocal(startTime)}
-                    onChange={(e) => setEndTime(fromDatetimeLocal(e.target.value))}
-                  />
-                </label>
-                <button className="review-edit-done-btn" type="button" onClick={() => setEditingTime(false)}>
-                  Listo
-                </button>
-              </>
-            ) : (
-              <>
-                <div className="review-time-row">
-                  <span className="review-time-label">Inicio</span>
-                  <span className="review-time-value">{formatDisplay(startTime)}</span>
-                </div>
-                <div className="review-time-row">
-                  <span className="review-time-label">Fin</span>
-                  <span className="review-time-value">{formatDisplay(endTime)}</span>
-                </div>
-                <button className="review-edit-btn" type="button" onClick={() => setEditingTime(true)}>
-                  Ajustar tiempos
-                </button>
-              </>
-            )}
+            <label className="review-time-row">
+              <span className="review-time-label">Inicio</span>
+              <input
+                className="review-time-input"
+                type="datetime-local"
+                defaultValue={toDatetimeLocal(startTime)}
+                max={toDatetimeLocal(endTime)}
+                onChange={(e) => setStartTime(fromDatetimeLocal(e.target.value))}
+              />
+            </label>
+            <label className="review-time-row">
+              <span className="review-time-label">Fin</span>
+              <input
+                className="review-time-input"
+                type="datetime-local"
+                defaultValue={toDatetimeLocal(endTime)}
+                min={toDatetimeLocal(startTime)}
+                onChange={(e) => setEndTime(fromDatetimeLocal(e.target.value))}
+              />
+            </label>
           </div>
         </div>
 
