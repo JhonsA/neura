@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { cancelReview, commitEvent } from '@/features/migraine/migraineSlice'
+import { commitEvent } from '@/features/migraine/migraineSlice'
 import type { Location } from '@/features/migraine/types'
 import WaveBackground from './WaveBackground'
 
@@ -25,15 +25,6 @@ function toDatetimeLocal(iso: string): string {
 
 function fromDatetimeLocal(value: string): string {
   return new Date(value).toISOString()
-}
-
-function formatDisplay(iso: string): string {
-  return new Date(iso).toLocaleTimeString('es', {
-    hour:   '2-digit',
-    minute: '2-digit',
-    day:    'numeric',
-    month:  'short',
-  })
 }
 
 const INTENSITIES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const
@@ -84,11 +75,6 @@ function ReviewScreen() {
 
   const isEdit   = Boolean(pending.id)
   const duration = formatDuration(startTime, endTime)
-
-  const handleCancel = () => {
-    dispatch(cancelReview())
-    navigate('/', { replace: true })
-  }
 
   const handleSave = () => {
     dispatch(commitEvent({ createdAt: startTime, endedAt: endTime, intensity, location: locations.length > 0 ? locations : null }))
