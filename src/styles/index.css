@@ -638,10 +638,15 @@ body {
 
 .form-intensity-labels {
   display: flex;
-  justify-content: space-between;
-  font-size: 0.75rem;
-  color: var(--c-text-muted);
+  justify-content: center;
   padding: 0 2px;
+}
+
+.form-intensity-current {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--c-title);
+  opacity: 0.9;
 }
 
 .form-location-grid {

@@ -38,6 +38,13 @@ function formatDisplay(iso: string): string {
 
 const INTENSITIES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const
 
+const INTENSITY_LABEL: Record<number, string> = {
+  1: 'Apenas perceptible', 2: 'Muy leve',    3: 'Leve',
+  4: 'Moderado',           5: 'Molesto',      6: 'Fuerte',
+  7: 'Muy fuerte',         8: 'Intenso',      9: 'Muy intenso',
+  10: 'Insoportable',
+}
+
 const LOCATIONS: { value: Location; label: string }[] = [
   { value: 'left',     label: 'Izquierda'      },
   { value: 'right',    label: 'Derecha'         },
@@ -156,15 +163,14 @@ function ReviewScreen() {
               ))}
             </div>
             <div className="form-intensity-labels">
-              <span>Leve</span>
-              <span>Severa</span>
+              <span className="form-intensity-current">{INTENSITY_LABEL[intensity]}</span>
             </div>
           </div>
 
           <div className="review-form-divider" />
 
           <div className="review-form-section">
-            <span className="review-form-label">¿Dónde dolía?</span>
+            <span className="review-form-label">¿Dónde sentiste el dolor?</span>
             <div className="form-location-grid" role="group" aria-label="Ubicación del dolor">
               {LOCATIONS.map(({ value, label }) => (
                 <button
