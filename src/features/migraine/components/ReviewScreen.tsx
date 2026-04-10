@@ -91,7 +91,7 @@ function ReviewScreen() {
   return (
     <main className="neura-screen" aria-label="Registrar migraña">
       <header className="neura-screen-header">
-        <button className="neura-back-btn" onClick={handleCancel} type="button" aria-label="Cancelar y volver">
+        <button className="neura-back-btn" onClick={handleSkip} type="button" aria-label="Volver sin guardar detalles">
           <ArrowLeft size={20} strokeWidth={1.8} />
         </button>
       </header>
