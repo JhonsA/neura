@@ -2,8 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Pencil } from 'lucide-react'
 
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { loadEventForEdit } from '@/features/migraine/migraineSlice'
+import { useAppSelector } from '@/app/hooks'
 import type { MigraineEvent } from '@/features/migraine/types'
 import WaveBackground from './WaveBackground'
 
@@ -79,17 +78,15 @@ function HistoryCard({ event, onEdit }: { event: MigraineEvent; onEdit: () => vo
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
 function HistoryScreen() {
-  const navigate  = useNavigate()
-  const dispatch  = useAppDispatch()
-  const events    = useAppSelector((state) => state.migraine.events)
+  const navigate = useNavigate()
+  const events   = useAppSelector((state) => state.migraine.events)
   const [page, setPage] = useState(0)
 
   const totalPages = Math.max(1, Math.ceil(events.length / PAGE_SIZE))
   const slice      = events.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE)
 
   const handleEdit = (id: string) => {
-    dispatch(loadEventForEdit(id))
-    navigate('/review', { state: { returnTo: '/history' } })
+    navigate(`/review/${id}`, { state: { returnTo: '/history' } })
   }
 
   return (

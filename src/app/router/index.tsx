@@ -8,7 +8,8 @@ export function AppRouter() {
     <BrowserRouter>
       <Routes>
         <Route path="/"        element={<App />} />
-        <Route path="/review"  element={<ReviewScreen />} />
+        <Route path="/review"     element={<ReviewScreen />} />
+        <Route path="/review/:id" element={<ReviewScreen />} />
         <Route path="/history" element={<HistoryScreen />} />
         {/* Fallback */}
         <Route path="*"        element={<Navigate to="/" replace />} />

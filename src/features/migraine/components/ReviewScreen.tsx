@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { cancelReview, commitEvent } from '@/features/migraine/migraineSlice'
+import { commitEvent } from '@/features/migraine/migraineSlice'
 import type { Location, Medication } from '@/features/migraine/types'
 import WaveBackground from './WaveBackground'
 
@@ -59,24 +59,39 @@ const MEDICATIONS: { value: Medication; label: string }[] = [
 function ReviewScreen() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { id }   = useParams<{ id?: string }>()
   const returnTo = (location.state as { returnTo?: string } | null)?.returnTo ?? '/'
   const dispatch = useAppDispatch()
   const pending  = useAppSelector((state) => state.migraine.pendingEvent)
+  const event    = useAppSelector((state) =>
+    id ? (state.migraine.events.find((e) => e.id === id) ?? null) : null
+  )
 
-  // All form state is local — Redux is only touched on final Guardar or cancel
-  const [startTime,   setStartTime]   = useState(pending?.createdAt ?? '')
-  const [endTime,     setEndTime]     = useState(pending?.endedAt   ?? '')
-  const [intensity,   setIntensity]   = useState<number>(pending?.intensity ?? 5)
-  const [locations,      setLocations]      = useState<Location[]>(pending?.location ?? [])
-  const [tookMed,        setTookMed]        = useState<boolean | null>(
-    pending?.medication === undefined || pending?.medication === null ? null
-    : pending.medication === false ? false
-    : true
+  // Source of truth: existing event for edits, pending times for new records
+  const source = id ? event : pending
+
+  // All form state is local — Redux is only touched on final Guardar
+  const [startTime,   setStartTime]   = useState(source?.createdAt ?? '')
+  const [endTime,     setEndTime]     = useState(source?.endedAt   ?? '')
+  const [intensity,   setIntensity]   = useState<number>(
+    (source && 'intensity' in source && source.intensity != null) ? source.intensity : 5
   )
-  const [medications,    setMedications]    = useState<Medication[]>(
-    Array.isArray(pending?.medication) ? pending.medication : []
+  const [locations, setLocations] = useState<Location[]>(
+    (source && 'location' in source && Array.isArray(source.location)) ? source.location : []
   )
-  const [medOther,       setMedOther]       = useState(pending?.medicationOther ?? '')
+  const [tookMed, setTookMed] = useState<boolean | null>(
+    (source && 'medication' in source)
+      ? source.medication === null ? null
+        : source.medication === false ? false
+        : true
+      : null
+  )
+  const [medications, setMedications] = useState<Medication[]>(
+    (source && 'medication' in source && Array.isArray(source.medication)) ? source.medication : []
+  )
+  const [medOther, setMedOther] = useState(
+    (source && 'medicationOther' in source) ? (source.medicationOther ?? '') : ''
+  )
 
   const toggleLocation = (loc: Location) => {
     setLocations((prev) =>
@@ -90,14 +105,15 @@ function ReviewScreen() {
     )
   }
 
-  // Guard: redirect if there's no pending event (e.g. direct URL access)
+  // Guard: redirect on direct URL access without valid state
   useEffect(() => {
-    if (!pending) navigate(returnTo, { replace: true })
-  }, [pending, navigate, returnTo])
+    if (id && !event) navigate(returnTo, { replace: true })
+    if (!id && !pending) navigate(returnTo, { replace: true })
+  }, [id, event, pending, navigate, returnTo])
 
-  if (!pending) return null
+  if (id ? !event : !pending) return null
 
-  const isEdit   = Boolean(pending.id)
+  const isEdit = Boolean(id)
   const duration = formatDuration(startTime, endTime)
 
   const handleSave = () => {
@@ -107,6 +123,7 @@ function ReviewScreen() {
       : tookMed === false ? false
       : effectiveMeds.length > 0 ? effectiveMeds : null
     dispatch(commitEvent({
+      id,
       createdAt: startTime,
       endedAt: endTime,
       intensity,
@@ -118,11 +135,11 @@ function ReviewScreen() {
   }
 
   const handleSkip = () => {
-    if (isEdit) {
-      dispatch(cancelReview())
-    } else {
-      dispatch(commitEvent({ createdAt: pending.createdAt, endedAt: pending.endedAt, intensity: null, location: null, medication: null, medicationOther: null }))
+    if (!isEdit) {
+      // New record: commit with no details (clears pendingEvent)
+      dispatch(commitEvent({ createdAt: startTime, endedAt: endTime, intensity: null, location: null, medication: null, medicationOther: null }))
     }
+    // For edits: just navigate away — no Redux state to clean up
     navigate(returnTo, { replace: true })
   }
 
