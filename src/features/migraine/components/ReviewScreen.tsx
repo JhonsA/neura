@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { commitEvent } from '@/features/migraine/migraineSlice'
+import { cancelReview, commitEvent } from '@/features/migraine/migraineSlice'
 import type { Location, Medication } from '@/features/migraine/types'
 import WaveBackground from './WaveBackground'
 
@@ -116,7 +116,13 @@ function ReviewScreen() {
   }
 
   const handleSkip = () => {
-    dispatch(commitEvent({ createdAt: pending.createdAt, endedAt: pending.endedAt, intensity: null, location: null, medication: null, medicationOther: null }))
+    if (isEdit) {
+      // Editing: just cancel, preserve the existing event untouched
+      dispatch(cancelReview())
+    } else {
+      // New record: save with no details
+      dispatch(commitEvent({ createdAt: pending.createdAt, endedAt: pending.endedAt, intensity: null, location: null, medication: null, medicationOther: null }))
+    }
     navigate('/', { replace: true })
   }
 
