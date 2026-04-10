@@ -5,6 +5,7 @@ import { ArrowLeft, Clock } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { cancelReview, commitEvent } from '@/features/migraine/migraineSlice'
 import type { MigraineEvent } from '@/features/migraine/types'
+import WaveBackground from './WaveBackground'
 
 type Location = MigraineEvent['location']
 
@@ -209,6 +210,8 @@ function ReviewScreen() {
           Omitir
         </button>
       </footer>
+
+      <WaveBackground />
     </main>
   )
 }

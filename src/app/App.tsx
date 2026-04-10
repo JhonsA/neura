@@ -7,6 +7,7 @@ import {
   useInitMigraine,
 } from '@/features/migraine'
 import { useAppSelector } from '@/app/hooks'
+import AvatarButton from '@/shared/components/AvatarButton'
 
 const WAVE_ANIMATED = import.meta.env.VITE_WAVE_ANIMATED === 'true'
 
@@ -17,6 +18,8 @@ function App() {
 
   return (
     <main className="neura-shell" aria-label="Registro de migrañas">
+      <AvatarButton />
+
       <section className="neura-hero">
         <h1 className="neura-title">Neura</h1>
         <span className="neura-title-deco" aria-hidden="true">
