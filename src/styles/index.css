@@ -361,6 +361,15 @@ body {
   padding: 32px 0;
 }
 
+.history-total {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--c-text-muted);
+  opacity: 0.5;
+  margin: 8px 0 4px;
+  letter-spacing: 0.03em;
+}
+
 .history-list {
   display: flex;
   flex-direction: column;
@@ -450,37 +459,80 @@ body {
   background: rgba(40, 45, 81, 0.8);
 }
 
-.history-pagination {
+.pagination-root {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 16px;
+  gap: 6px;
   padding: 8px 0;
 }
 
-.history-page-btn {
+.pagination-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pagination-arrow,
+.pagination-page {
   display: grid;
   place-items: center;
-  width: 36px; height: 36px;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 6px;
   border-radius: 10px;
-  border: 1px solid var(--c-border);
+  border: 1px solid transparent;
   background: transparent;
   color: var(--c-text-muted);
-  font-size: 1.2rem;
+  font-size: 0.88rem;
+  font-family: inherit;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  user-select: none;
 }
-.history-page-btn:hover:not(:disabled) {
-  background: rgba(40, 45, 81, 0.8);
+
+.pagination-arrow {
+  font-size: 1.2rem;
+  border-color: var(--c-border);
+}
+
+.pagination-arrow:hover:not(:disabled),
+.pagination-page:hover:not(.pagination-page--active) {
+  background: var(--c-surface-2);
   color: var(--c-text-strong);
 }
-.history-page-btn:disabled { opacity: 0.25; cursor: default; }
 
-.history-page-info {
-  font-size: 0.82rem;
+.pagination-arrow:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.pagination-page--active {
+  background: var(--c-surface-2);
+  border-color: var(--c-border);
+  color: var(--c-text-strong);
+  font-weight: 600;
+  cursor: default;
+}
+
+.pagination-ellipsis {
+  display: grid;
+  place-items: center;
+  min-width: 28px;
+  height: 34px;
+  font-size: 0.75rem;
   color: var(--c-text-muted);
-  min-width: 40px;
-  text-align: center;
+  opacity: 0.5;
+  letter-spacing: 0.1em;
+  user-select: none;
+}
+
+.pagination-total {
+  font-size: 0.72rem;
+  color: var(--c-text-muted);
+  opacity: 0.5;
+  letter-spacing: 0.03em;
+  margin: 0;
 }
 
 /* ── Crisis state ───────────────────────────────────────── */

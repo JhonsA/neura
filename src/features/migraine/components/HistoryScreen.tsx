@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Pencil } from 'lucide-react'
 
 import { useAppSelector } from '@/app/hooks'
+import { Pagination } from '@/shared/components/Pagination'
 import type { MigraineEvent } from '@/features/migraine/types'
 import WaveBackground from './WaveBackground'
 
-const PAGE_SIZE = 8
+const PAGE_SIZE = 7
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -103,7 +104,6 @@ function HistoryScreen() {
       <section className="neura-screen-body">
         <div className="neura-screen-hero">
           <h1 className="neura-screen-title">Historial</h1>
-          <p className="neura-screen-subtitle">{events.length} {events.length === 1 ? 'registro' : 'registros'}</p>
         </div>
 
         {events.length === 0 ? (
@@ -120,29 +120,12 @@ function HistoryScreen() {
               ))}
             </div>
 
-            {totalPages > 1 && (
-              <div className="history-pagination" aria-label="Paginación">
-                <button
-                  className="history-page-btn"
-                  type="button"
-                  disabled={page === 0}
-                  onClick={() => setPage((p) => p - 1)}
-                  aria-label="Página anterior"
-                >
-                  ‹
-                </button>
-                <span className="history-page-info">{page + 1} / {totalPages}</span>
-                <button
-                  className="history-page-btn"
-                  type="button"
-                  disabled={page === totalPages - 1}
-                  onClick={() => setPage((p) => p + 1)}
-                  aria-label="Página siguiente"
-                >
-                  ›
-                </button>
-              </div>
-            )}
+                        <Pagination
+              page={page}
+              totalPages={totalPages}
+              onChange={setPage}
+              totalLabel={`${events.length} ${events.length === 1 ? 'registro en total' : 'registros en total'}`}
+            />
           </>
         )}
       </section>
