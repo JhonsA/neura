@@ -113,7 +113,7 @@ function ReviewScreen() {
         <div className="review-form">
 
           <div className="review-form-section">
-            <span className="review-form-label">¿Cuándo fue?</span>
+            <span className="review-form-label">Duración del episodio</span>
             <div className="review-times">
               <label className="review-time-row">
                 <span className="review-time-label">Inicio</span>

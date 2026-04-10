@@ -547,7 +547,6 @@ body {
   font-size: 0.72rem;
   font-weight: 500;
   color: var(--c-text-muted);
-  text-transform: uppercase;
   letter-spacing: 0.07em;
 }
 .review-time-value {
