@@ -53,13 +53,16 @@ function HistoryCard({ event, onEdit }: { event: MigraineEvent; onEdit: () => vo
 
         <div className="history-card-right">
           {event.intensity !== null && (
-            <span
-              className="history-card-intensity"
-              style={{ color: intensityColor(event.intensity) }}
-              aria-label={`Intensidad ${event.intensity}`}
-            >
-              {event.intensity}
-            </span>
+            <div className="history-card-intensity-wrap">
+              <span className="history-card-intensity-label">intensidad</span>
+              <span
+                className="history-card-intensity"
+                style={{ color: intensityColor(event.intensity) }}
+                aria-label={`Intensidad ${event.intensity}`}
+              >
+                {event.intensity}
+              </span>
+            </div>
           )}
           <button
             className="history-card-edit-btn"
