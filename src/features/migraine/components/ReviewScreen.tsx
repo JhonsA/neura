@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Clock } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { cancelReview, commitEvent } from '@/features/migraine/migraineSlice'
@@ -96,49 +96,45 @@ function ReviewScreen() {
       </header>
 
       <section className="neura-screen-body">
-        {/* ── Hero: icono + título + duración ── */}
+        {/* ── Hero ── */}
         <div className="neura-screen-hero">
-          <div className="review-icon-wrap" aria-hidden="true">
-            <Clock size={24} strokeWidth={1.5} />
-          </div>
           <h1 className="neura-screen-title">{isEdit ? 'Editar migraña' : 'Migraña registrada'}</h1>
-          <p className="review-duration" aria-label={`Duración: ${duration}`}>
-            <span className="review-duration-label">Duración</span>
-            <span className="review-duration-value">{duration}</span>
-          </p>
+          <p className="review-duration-badge" aria-label={`Duración: ${duration}`}>{duration}</p>
         </div>
 
-        {/* ── Tiempos ── */}
-        <div className="review-card">
-          <span className="review-card-label">Tiempos</span>
-          <div className="review-times">
-            <label className="review-time-row">
-              <span className="review-time-label">Inicio</span>
-              <input
-                className="review-time-input"
-                type="datetime-local"
-                defaultValue={toDatetimeLocal(startTime)}
-                max={toDatetimeLocal(endTime)}
-                onChange={(e) => setStartTime(fromDatetimeLocal(e.target.value))}
-              />
-            </label>
-            <label className="review-time-row">
-              <span className="review-time-label">Fin</span>
-              <input
-                className="review-time-input"
-                type="datetime-local"
-                defaultValue={toDatetimeLocal(endTime)}
-                min={toDatetimeLocal(startTime)}
-                onChange={(e) => setEndTime(fromDatetimeLocal(e.target.value))}
-              />
-            </label>
+        {/* ── Formulario unificado ── */}
+        <div className="review-form">
+
+          <div className="review-form-section">
+            <span className="review-form-label">¿Cuándo fue?</span>
+            <div className="review-times">
+              <label className="review-time-row">
+                <span className="review-time-label">Inicio</span>
+                <input
+                  className="review-time-input"
+                  type="datetime-local"
+                  defaultValue={toDatetimeLocal(startTime)}
+                  max={toDatetimeLocal(endTime)}
+                  onChange={(e) => setStartTime(fromDatetimeLocal(e.target.value))}
+                />
+              </label>
+              <label className="review-time-row">
+                <span className="review-time-label">Fin</span>
+                <input
+                  className="review-time-input"
+                  type="datetime-local"
+                  defaultValue={toDatetimeLocal(endTime)}
+                  min={toDatetimeLocal(startTime)}
+                  onChange={(e) => setEndTime(fromDatetimeLocal(e.target.value))}
+                />
+              </label>
+            </div>
           </div>
-        </div>
 
-        {/* ── Intensidad ── */}
-        <div className="review-card">
-          <div className="form-field">
-            <span className="form-field-label">Intensidad</span>
+          <div className="review-form-divider" />
+
+          <div className="review-form-section">
+            <span className="review-form-label">¿Qué tan fuerte?</span>
             <div className="form-intensity-grid" role="group" aria-label="Intensidad del dolor">
               {INTENSITIES.map((n) => (
                 <button
@@ -157,12 +153,11 @@ function ReviewScreen() {
               <span>Severa</span>
             </div>
           </div>
-        </div>
 
-        {/* ── Ubicación ── */}
-        <div className="review-card">
-          <div className="form-field">
-            <span className="form-field-label">Ubicación</span>
+          <div className="review-form-divider" />
+
+          <div className="review-form-section">
+            <span className="review-form-label">¿Dónde dolía?</span>
             <div className="form-location-grid" role="group" aria-label="Ubicación del dolor">
               {LOCATIONS.map(({ value, label }) => (
                 <button
@@ -177,6 +172,7 @@ function ReviewScreen() {
               ))}
             </div>
           </div>
+
         </div>
       </section>
 
