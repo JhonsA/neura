@@ -417,7 +417,7 @@ body {
 .history-card-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
@@ -442,12 +442,17 @@ body {
   line-height: 1;
 }
 
+.history-card-actions {
+  display: flex;
+  gap: 4px;
+}
+
 .history-card-edit-btn {
   display: grid;
   place-items: center;
-  width: 30px; height: 30px;
-  border-radius: 8px;
-  border: 1px solid var(--c-border);
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  border: none;
   background: transparent;
   color: var(--c-text-muted);
   cursor: pointer;
@@ -456,7 +461,50 @@ body {
 }
 .history-card-edit-btn:hover {
   opacity: 1;
-  background: rgba(40, 45, 81, 0.8);
+  background: var(--c-surface-2);
+}
+
+.history-card-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px 12px;
+  border-top: 1px solid var(--c-border);
+  gap: 12px;
+}
+
+.history-card-confirm-text {
+  font-size: 0.8rem;
+  color: var(--c-text-muted);
+}
+
+.history-card-confirm-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.history-confirm-btn {
+  padding: 5px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--c-border);
+  background: transparent;
+  color: var(--c-text-muted);
+  font-size: 0.8rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.history-confirm-btn:hover {
+  background: var(--c-surface-2);
+  color: var(--c-text-strong);
+}
+.history-confirm-btn--danger {
+  color: #c26b6b;
+  border-color: rgba(194, 107, 107, 0.35);
+}
+.history-confirm-btn--danger:hover {
+  background: rgba(194, 107, 107, 0.15);
+  color: #c26b6b;
 }
 
 .pagination-root {

@@ -83,6 +83,11 @@ export const migraineSlice = createSlice({
     cancelReview(state) {
       state.pendingEvent = null
     },
+
+    /** Permanently removes an event by id. */
+    deleteEvent(state, action: PayloadAction<string>) {
+      state.events = state.events.filter((e) => e.id !== action.payload)
+    },
   },
 })
 
@@ -91,6 +96,7 @@ export const {
   beginReview,
   commitEvent,
   cancelReview,
+  deleteEvent,
 } = migraineSlice.actions
 
 export default migraineSlice.reducer

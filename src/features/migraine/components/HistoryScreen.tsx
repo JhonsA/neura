@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Pencil } from 'lucide-react'
+import { ArrowLeft, Pencil, Trash2 } from 'lucide-react'
 
-import { useAppSelector } from '@/app/hooks'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { deleteEvent } from '@/features/migraine/migraineSlice'
 import { Pagination } from '@/shared/components/Pagination'
 import type { MigraineEvent } from '@/features/migraine/types'
 import WaveBackground from './WaveBackground'
@@ -40,7 +41,8 @@ function intensityColor(n: number | null): string {
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
 
-function HistoryCard({ event, onEdit }: { event: MigraineEvent; onEdit: () => void }) {
+function HistoryCard({ event, onEdit, onDelete }: { event: MigraineEvent; onEdit: () => void; onDelete: () => void }) {
+  const [confirming, setConfirming] = useState(false)
   const duration = formatDuration(event.createdAt, event.endedAt)
 
   return (
@@ -65,16 +67,40 @@ function HistoryCard({ event, onEdit }: { event: MigraineEvent; onEdit: () => vo
               </span>
             </div>
           )}
-          <button
-            className="history-card-edit-btn"
-            type="button"
-            onClick={onEdit}
-            aria-label="Editar registro"
-          >
-            <Pencil size={13} strokeWidth={1.8} />
-          </button>
+          <div className="history-card-actions">
+            <button
+              className="history-card-edit-btn"
+              type="button"
+              onClick={onEdit}
+              aria-label="Editar registro"
+            >
+              <Pencil size={13} strokeWidth={1.8} />
+            </button>
+            <button
+              className="history-card-edit-btn"
+              type="button"
+              onClick={() => setConfirming(true)}
+              aria-label="Eliminar registro"
+            >
+              <Trash2 size={13} strokeWidth={1.8} />
+            </button>
+          </div>
         </div>
       </div>
+
+      {confirming && (
+        <div className="history-card-confirm">
+          <span className="history-card-confirm-text">¿Eliminar este registro?</span>
+          <div className="history-card-confirm-actions">
+            <button className="history-confirm-btn history-confirm-btn--danger" type="button" onClick={onDelete}>
+              Eliminar
+            </button>
+            <button className="history-confirm-btn" type="button" onClick={() => setConfirming(false)}>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
     </article>
   )
 }
@@ -83,6 +109,7 @@ function HistoryCard({ event, onEdit }: { event: MigraineEvent; onEdit: () => vo
 
 function HistoryScreen() {
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
   const events   = useAppSelector((state) => state.migraine.events)
   const [page, setPage] = useState(0)
 
@@ -116,6 +143,7 @@ function HistoryScreen() {
                   key={event.id}
                   event={event}
                   onEdit={() => handleEdit(event.id)}
+                  onDelete={() => dispatch(deleteEvent(event.id))}
                 />
               ))}
             </div>
