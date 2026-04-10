@@ -7,7 +7,7 @@ import { Pagination } from '@/shared/components/Pagination'
 import type { MigraineEvent } from '@/features/migraine/types'
 import WaveBackground from './WaveBackground'
 
-const PAGE_SIZE = 7
+const PAGE_SIZE = 5
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
