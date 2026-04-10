@@ -27,6 +27,11 @@ function fromDatetimeLocal(value: string): string {
   return new Date(value).toISOString()
 }
 
+/** Current local datetime in the format required by datetime-local inputs */
+function nowLocal(): string {
+  return toDatetimeLocal(new Date().toISOString())
+}
+
 const INTENSITIES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const
 
 const INTENSITY_LABEL: Record<number, string> = {
@@ -105,6 +110,31 @@ function ReviewScreen() {
     )
   }
 
+  // ── Date validation ───────────────────────────────────────────────────────
+  type FieldState = { msg: string; level: 'error' | 'warning' | '' }
+
+  function validateDates(start: string, end: string): { startState: FieldState; endState: FieldState } {
+    const now     = Date.now()
+    const startTs = Date.parse(start)
+    const endTs   = Date.parse(end)
+    let startState: FieldState = { msg: '', level: '' }
+    let endState:   FieldState = { msg: '', level: '' }
+
+    if (startTs > now)
+      startState = { msg: 'Parece que esta fecha es futura', level: 'error' }
+    if (endTs > now)
+      endState = { msg: 'Parece que esta fecha es futura', level: 'error' }
+    if (!startState.msg && !endState.msg && startTs > endTs)
+      endState = { msg: 'Parece que el fin ocurre antes del inicio', level: 'error' }
+    if (!startState.msg && !endState.msg && startTs === endTs)
+      endState = { msg: '¿La migraña duró menos de un minuto?', level: 'warning' }
+
+    return { startState, endState }
+  }
+
+  const { startState, endState } = validateDates(startTime, endTime)
+  const hasDateErrors = startState.level === 'error' || endState.level === 'error'
+
   // Guard: redirect on direct URL access without valid state
   useEffect(() => {
     if (id && !event) navigate(returnTo, { replace: true })
@@ -117,6 +147,7 @@ function ReviewScreen() {
   const duration = formatDuration(startTime, endTime)
 
   const handleSave = () => {
+    if (hasDateErrors) return
     const hasOtherText = medOther.trim().length > 0
     const effectiveMeds = medications.filter((m) => m !== 'other' || hasOtherText)
     const medicationPayload = tookMed === null ? null
@@ -167,22 +198,32 @@ function ReviewScreen() {
               <label className="review-time-row">
                 <span className="review-time-label">Inicio</span>
                 <input
-                  className="review-time-input"
+                  className={`review-time-input${startState.level ? ` review-time-input--${startState.level}` : ''}`}
                   type="datetime-local"
                   defaultValue={toDatetimeLocal(startTime)}
-                  max={toDatetimeLocal(endTime)}
+                  max={nowLocal()}
                   onChange={(e) => setStartTime(fromDatetimeLocal(e.target.value))}
                 />
+                {startState.msg && (
+                  <span className={`review-time-feedback review-time-feedback--${startState.level}`}>
+                    {startState.msg}
+                  </span>
+                )}
               </label>
               <label className="review-time-row">
                 <span className="review-time-label">Fin</span>
                 <input
-                  className="review-time-input"
+                  className={`review-time-input${endState.level ? ` review-time-input--${endState.level}` : ''}`}
                   type="datetime-local"
                   defaultValue={toDatetimeLocal(endTime)}
-                  min={toDatetimeLocal(startTime)}
+                  max={nowLocal()}
                   onChange={(e) => setEndTime(fromDatetimeLocal(e.target.value))}
                 />
+                {endState.msg && (
+                  <span className={`review-time-feedback review-time-feedback--${endState.level}`}>
+                    {endState.msg}
+                  </span>
+                )}
               </label>
             </div>
           </div>
@@ -285,7 +326,7 @@ function ReviewScreen() {
       </section>
 
       <footer className="neura-screen-footer">
-        <button className="neura-btn-primary" type="button" onClick={handleSave}>
+        <button className="neura-btn-primary" type="button" onClick={handleSave} disabled={hasDateErrors}>
           Guardar
         </button>
         <button className="neura-btn-ghost" type="button" onClick={handleSkip}>

@@ -815,6 +815,24 @@ body {
   outline: 2px solid rgba(114, 128, 210, 0.5);
   outline-offset: 2px;
 }
+.review-time-input--error {
+  border-color: rgba(194, 107, 107, 0.6);
+}
+.review-time-input--error:focus {
+  outline-color: rgba(194, 107, 107, 0.3);
+}
+.review-time-input--warning {
+  border-color: rgba(212, 168, 75, 0.5);
+}
+.review-time-input--warning:focus {
+  outline-color: rgba(212, 168, 75, 0.25);
+}
+.review-time-feedback {
+  font-size: 0.75rem;
+  margin-top: 4px;
+}
+.review-time-feedback--error   { color: #c26b6b; }
+.review-time-feedback--warning { color: #d4a84b; }
 
 .review-edit-btn {
   align-self: center;
