@@ -99,16 +99,18 @@ function ReviewScreen() {
   const duration = formatDuration(startTime, endTime)
 
   const handleSave = () => {
+    const hasOtherText = medOther.trim().length > 0
+    const effectiveMeds = medications.filter((m) => m !== 'other' || hasOtherText)
     const medicationPayload = tookMed === null ? null
       : tookMed === false ? false
-      : medications.length > 0 ? medications : null
+      : effectiveMeds.length > 0 ? effectiveMeds : null
     dispatch(commitEvent({
       createdAt: startTime,
       endedAt: endTime,
       intensity,
       location: locations.length > 0 ? locations : null,
       medication: medicationPayload,
-      medicationOther: medications.includes('other') ? medOther || null : null,
+      medicationOther: hasOtherText ? medOther.trim() : null,
     }))
     navigate('/', { replace: true })
   }
