@@ -64,17 +64,18 @@ export const migraineSlice = createSlice({
         location: MigraineEvent['location']
         medication: MigraineEvent['medication']
         medicationOther: MigraineEvent['medicationOther']
+        context: MigraineEvent['context']
       }>,
     ) {
-      const { id, createdAt, endedAt, intensity, location, medication, medicationOther } = action.payload
+      const { id, createdAt, endedAt, intensity, location, medication, medicationOther, context } = action.payload
       if (id) {
         const idx = state.events.findIndex((e) => e.id === id)
         if (idx !== -1) {
-          state.events[idx] = { id, createdAt, endedAt, intensity, location, medication, medicationOther }
+          state.events[idx] = { id, createdAt, endedAt, intensity, location, medication, medicationOther, context }
         }
       } else {
         if (!state.pendingEvent) return
-        state.events.unshift({ id: crypto.randomUUID(), createdAt, endedAt, intensity, location, medication, medicationOther })
+        state.events.unshift({ id: crypto.randomUUID(), createdAt, endedAt, intensity, location, medication, medicationOther, context })
         state.pendingEvent = null
       }
     },

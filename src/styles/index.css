@@ -760,6 +760,22 @@ body {
   color: var(--c-text-muted);
 }
 
+.review-context-toggle {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font);
+  transition: background 0.12s;
+}
+.review-context-toggle:hover {
+  background: rgba(60, 60, 109, 0.18);
+}
+
 .review-form-divider {
   height: 1px;
   background: var(--c-border);

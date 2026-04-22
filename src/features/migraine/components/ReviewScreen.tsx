@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation, useParams } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, ChevronDown } from 'lucide-react'
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { commitEvent } from '@/features/migraine/migraineSlice'
-import type { Location, Medication } from '@/features/migraine/types'
+import type { Location, Medication, SleepHours, SleepQuality, StressLevel, Hydration, Meal, Trigger } from '@/features/migraine/types'
 import WaveBackground from './WaveBackground'
 
 function formatDuration(startIso: string, endIso: string): string {
@@ -68,6 +68,53 @@ const MEDICATIONS: { value: Medication; label: string }[] = [
   { value: 'other',       label: 'Otro'        },
 ]
 
+const SLEEP_HOURS: { value: SleepHours; label: string }[] = [
+  { value: '<5h',  label: 'Menos de 5h' },
+  { value: '5-6h', label: '5 – 6h'      },
+  { value: '7-8h', label: '7 – 8h'      },
+  { value: '+8h',  label: 'Más de 8h'   },
+]
+
+const SLEEP_QUALITY: { value: SleepQuality; label: string }[] = [
+  { value: 'bad',     label: 'Malo'    },
+  { value: 'regular', label: 'Regular' },
+  { value: 'good',    label: 'Bueno'   },
+]
+
+const STRESS_LEVELS: { value: StressLevel; label: string }[] = [
+  { value: 'low',    label: 'Bajo'  },
+  { value: 'medium', label: 'Medio' },
+  { value: 'high',   label: 'Alto'  },
+]
+
+const HYDRATION_LEVELS: { value: Hydration; label: string }[] = [
+  { value: 'low',    label: 'Baja'   },
+  { value: 'normal', label: 'Normal' },
+  { value: 'high',   label: 'Alta'   },
+]
+
+const MEALS: { value: Meal; label: string }[] = [
+  { value: 'breakfast', label: 'Desayuno' },
+  { value: 'lunch',     label: 'Almuerzo' },
+  { value: 'dinner',    label: 'Cena'     },
+]
+
+const TRIGGERS: { value: Trigger; label: string }[] = [
+  { value: 'sleep',        label: 'Poco sueño'      },
+  { value: 'stress',       label: 'Estrés'          },
+  { value: 'dehydration',  label: 'Deshidratación'  },
+  { value: 'skipped_meal', label: 'Saltarse comida' },
+  { value: 'screens_light', label: 'Pantallas / luz' },
+  { value: 'noise',        label: 'Ruido'           },
+  { value: 'smells',       label: 'Olores'          },
+  { value: 'exercise',     label: 'Esfuerzo físico' },
+  { value: 'weather',      label: 'Cambio de clima' },
+  { value: 'menstrual',    label: 'Ciclo menstrual' },
+  { value: 'alcohol',      label: 'Alcohol'         },
+  { value: 'unknown',      label: 'Sin causa clara' },
+  { value: 'other',        label: 'Otro'            },
+]
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 function ReviewScreen() {
@@ -106,6 +153,24 @@ function ReviewScreen() {
   const [medOther, setMedOther] = useState(
     (source && 'medicationOther' in source) ? (source.medicationOther ?? '') : ''
   )
+
+  // ── Context state ─────────────────────────────────────────────────────────
+  const srcCtx = source && 'context' in source ? source.context : null
+  const [sleepHours,    setSleepHours]    = useState<SleepHours | null>(srcCtx?.sleepHours ?? null)
+  const [sleepQuality,  setSleepQuality]  = useState<SleepQuality | null>(srcCtx?.sleepQuality ?? null)
+  const [stressLevel,   setStressLevel]   = useState<StressLevel | null>(srcCtx?.stressLevel ?? null)
+  const [hydration,     setHydration]     = useState<Hydration | null>(srcCtx?.hydration ?? null)
+  const [skippedMeals,  setSkippedMeals]  = useState<boolean | null>(srcCtx?.skippedMeals ?? null)
+  const [skippedMealsList, setSkippedMealsList] = useState<Meal[]>(srcCtx?.skippedMealsList ?? [])
+  const [trigger,       setTrigger]       = useState<Trigger | null>(srcCtx?.trigger ?? null)
+  const [triggerOther,  setTriggerOther]  = useState(srcCtx?.triggerOther ?? '')
+  const [showContext,   setShowContext]   = useState(srcCtx !== null)
+
+  const toggleSkippedMeal = (meal: Meal) => {
+    setSkippedMealsList((prev) =>
+      prev.includes(meal) ? prev.filter((m) => m !== meal) : [...prev, meal]
+    )
+  }
 
   const SIDE_VALUES = LOCATIONS_SIDE.map((l) => l.value)
 
@@ -188,6 +253,16 @@ function ReviewScreen() {
       location: locations.length > 0 ? locations : null,
       medication: medicationPayload,
       medicationOther: hasOtherText ? medOther.trim() : null,
+      context: {
+        sleepHours,
+        sleepQuality,
+        stressLevel,
+        hydration,
+        skippedMeals,
+        skippedMealsList,
+        trigger,
+        triggerOther: trigger === 'other' && triggerOther.trim().length > 0 ? triggerOther.trim() : null,
+      },
     }))
     navigate(returnTo, { replace: true })
   }
@@ -195,7 +270,7 @@ function ReviewScreen() {
   const handleSkip = () => {
     if (!isEdit) {
       // New record: commit with no details (clears pendingEvent)
-      dispatch(commitEvent({ createdAt: startTime, endedAt: endTime, intensity: null, location: null, medication: null, medicationOther: null }))
+      dispatch(commitEvent({ createdAt: startTime, endedAt: endTime, intensity: null, location: null, medication: null, medicationOther: null, context: null }))
     }
     // For edits: just navigate away — no Redux state to clean up
     navigate(returnTo, { replace: true })
@@ -367,6 +442,177 @@ function ReviewScreen() {
               </div>
             )}
           </div>
+
+          <div className="review-form-divider" />
+
+          {/* ── Accordion: más detalles ── */}
+          <button
+            type="button"
+            className="review-form-section review-context-toggle"
+            onClick={() => setShowContext((v) => !v)}
+            aria-expanded={showContext}
+          >
+            <span className="review-form-label">¿Quieres agregar más información?</span>
+            <ChevronDown
+              size={15}
+              strokeWidth={2}
+              color="var(--c-text-strong)"
+              style={{ transition: 'transform 0.2s', transform: showContext ? 'rotate(180deg)' : 'rotate(0deg)', marginLeft: 'auto', flexShrink: 0 }}
+            />
+          </button>
+
+          {showContext && (
+            <>
+          {/* ── Sueño previo ── */}
+          <div className="review-form-section">
+            <span className="review-form-label">Sueño previo</span>
+
+            <span className="review-form-sublabel">Horas</span>
+            <div className="form-location-grid" role="group" aria-label="Horas de sueño">
+              {SLEEP_HOURS.map(({ value, label }) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={`form-location-btn${sleepHours === value ? ' form-location-btn--active' : ''}`}
+                  onClick={() => setSleepHours(sleepHours === value ? null : value)}
+                  aria-pressed={sleepHours === value}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <span className="review-form-sublabel" style={{ marginTop: '6px' }}>Calidad</span>
+            <div className="form-location-grid" role="group" aria-label="Calidad del sueño">
+              {SLEEP_QUALITY.map(({ value, label }) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={`form-location-btn${sleepQuality === value ? ' form-location-btn--active' : ''}`}
+                  onClick={() => setSleepQuality(sleepQuality === value ? null : value)}
+                  aria-pressed={sleepQuality === value}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="review-form-divider" />
+
+          {/* ── Estrés del día ── */}
+          <div className="review-form-section">
+            <span className="review-form-label">Estrés del día</span>
+            <div className="form-location-grid" role="group" aria-label="Nivel de estrés">
+              {STRESS_LEVELS.map(({ value, label }) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={`form-location-btn${stressLevel === value ? ' form-location-btn--active' : ''}`}
+                  onClick={() => setStressLevel(stressLevel === value ? null : value)}
+                  aria-pressed={stressLevel === value}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="review-form-divider" />
+
+          {/* ── Hidratación ── */}
+          <div className="review-form-section">
+            <span className="review-form-label">Hidratación</span>
+            <div className="form-location-grid" role="group" aria-label="Nivel de hidratación">
+              {HYDRATION_LEVELS.map(({ value, label }) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={`form-location-btn${hydration === value ? ' form-location-btn--active' : ''}`}
+                  onClick={() => setHydration(hydration === value ? null : value)}
+                  aria-pressed={hydration === value}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="review-form-divider" />
+
+          {/* ── Comidas ── */}
+          <div className="review-form-section">
+            <span className="review-form-label">¿Saltaste alguna comida?</span>
+            <div className="form-yesno-group" role="group" aria-label="¿Saltaste comidas?">
+              <button
+                type="button"
+                className={`form-yesno-btn${skippedMeals === true ? ' form-yesno-btn--active' : ''}`}
+                onClick={() => setSkippedMeals(skippedMeals === true ? null : true)}
+                aria-pressed={skippedMeals === true}
+              >
+                Sí
+              </button>
+              <button
+                type="button"
+                className={`form-yesno-btn${skippedMeals === false ? ' form-yesno-btn--active' : ''}`}
+                onClick={() => { setSkippedMeals(skippedMeals === false ? null : false); setSkippedMealsList([]) }}
+                aria-pressed={skippedMeals === false}
+              >
+                No
+              </button>
+            </div>
+
+            {skippedMeals === true && (
+              <div className="form-med-section">
+                <span className="review-form-sublabel">¿Cuál(es)?</span>
+                <div className="form-location-grid" role="group" aria-label="Comidas saltadas">
+                  {MEALS.map(({ value, label }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={`form-location-btn${skippedMealsList.includes(value) ? ' form-location-btn--active' : ''}`}
+                      onClick={() => toggleSkippedMeal(value)}
+                      aria-pressed={skippedMealsList.includes(value)}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="review-form-divider" />
+
+          {/* ── Desencadenante principal ── */}
+          <div className="review-form-section">
+            <span className="review-form-label">¿Qué crees que lo detonó?</span>
+            <div className="form-location-grid" role="group" aria-label="Desencadenante principal">
+              {TRIGGERS.map(({ value, label }) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={`form-location-btn${trigger === value ? ' form-location-btn--active' : ''}`}
+                  onClick={() => setTrigger(trigger === value ? null : value)}
+                  aria-pressed={trigger === value}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            {trigger === 'other' && (
+              <input
+                className="form-med-other-input"
+                type="text"
+                placeholder="Describir desencadenante..."
+                value={triggerOther}
+                onChange={(e) => setTriggerOther(e.target.value)}
+                maxLength={80}
+              />
+            )}
+          </div>
+            </>
+          )}
 
         </div>
       </section>
