@@ -212,9 +212,13 @@ function ReviewScreen() {
     let startState: FieldState = { msg: '', level: '' }
     let endState:   FieldState = { msg: '', level: '' }
 
-    if (startTs > now)
+    if (!start || isNaN(startTs))
+      startState = { msg: 'La fecha de inicio es obligatoria', level: 'error' }
+    if (!end || isNaN(endTs))
+      endState   = { msg: 'La fecha de fin es obligatoria', level: 'error' }
+    if (!startState.msg && startTs > now)
       startState = { msg: 'Parece que esta fecha es futura', level: 'error' }
-    if (endTs > now)
+    if (!endState.msg && endTs > now)
       endState = { msg: 'Parece que esta fecha es futura', level: 'error' }
     if (!startState.msg && !endState.msg && startTs > endTs)
       endState = { msg: 'Parece que el fin ocurre antes del inicio', level: 'error' }
