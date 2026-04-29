@@ -13,4 +13,14 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) return 'vendor'
+          if (id.includes('@reduxjs') || id.includes('react-redux') || id.includes('redux-persist')) return 'state'
+        },
+      },
+    },
+  },
 })

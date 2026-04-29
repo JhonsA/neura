@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { Activity, CalendarDays, ChevronRight } from 'lucide-react'
 
 import { useAppSelector } from '@/app/hooks'
+import { selectLastEvent } from '@/features/migraine/migraineSlice'
 
 function formatElapsed(startIso: string): string {
   const elapsed = Math.max(0, Math.floor((Date.now() - Date.parse(startIso)) / 1000))
@@ -52,7 +53,7 @@ function getDuration(startIso: string, endIso?: string): string {
 function LastMigraineCard() {
   const navigate      = useNavigate()
   const activeSession = useAppSelector((state) => state.migraine.activeSession)
-  const lastEvent     = useAppSelector((state) => state.migraine.events[0])
+  const lastEvent     = useAppSelector(selectLastEvent)
   const [, tick] = useState(0)
 
   // Ticker for the live crisis counter only — "última migraña" doesn't need one

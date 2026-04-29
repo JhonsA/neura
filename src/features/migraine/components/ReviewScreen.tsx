@@ -1,21 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import { ArrowLeft, ChevronDown } from 'lucide-react'
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { commitEvent } from '@/features/migraine/migraineSlice'
 import type { Location, Medication, SleepHours, SleepQuality, StressLevel, Hydration, Meal, Trigger } from '@/features/migraine/types'
+import { formatDuration, intensityColor } from '@/features/migraine/utils'
 import WaveBackground from './WaveBackground'
-
-function formatDuration(startIso: string, endIso: string): string {
-  const secs = Math.max(0, Math.round((Date.parse(endIso) - Date.parse(startIso)) / 1000))
-  const h    = Math.floor(secs / 3600)
-  const m    = Math.floor((secs % 3600) / 60)
-  if (h > 0 && m > 0) return `${h}h ${m}min`
-  if (h > 0)          return `${h}h`
-  if (m > 0)          return `${m} min`
-  return `${secs} seg`
-}
 
 function toDatetimeLocal(iso: string): string {
   const d      = new Date(iso)
@@ -54,12 +45,6 @@ const LOCATIONS_ZONE: { value: Location; label: string }[] = [
   { value: 'back',     label: 'Parte posterior' },
   { value: 'whole',    label: 'Toda la cabeza'  },
 ]
-
-function intensityColor(n: number): string {
-  if (n <= 3) return '#6db8a0'
-  if (n <= 6) return '#d4a84b'
-  return '#c26b6b'
-}
 
 const MEDICATIONS: { value: Medication; label: string }[] = [
   { value: 'ibuprofen',   label: 'Ibuprofeno'  },
@@ -114,7 +99,35 @@ const TRIGGERS: { value: Trigger; label: string }[] = [
   { value: 'unknown',      label: 'Sin causa clara' },
   { value: 'other',        label: 'Otro'            },
 ]
+// ─── Date validation ────────────────────────────────────────────────────────────────
 
+type FieldState = { msg: string; level: 'error' | 'warning' | '' }
+
+function validateDates(
+  start: string,
+  end: string,
+  now: number,
+): { startState: FieldState; endState: FieldState } {
+  const startTs = Date.parse(start)
+  const endTs   = Date.parse(end)
+  let startState: FieldState = { msg: '', level: '' }
+  let endState:   FieldState = { msg: '', level: '' }
+
+  if (!start || isNaN(startTs))
+    startState = { msg: 'La fecha de inicio es obligatoria', level: 'error' }
+  if (!end || isNaN(endTs))
+    endState   = { msg: 'La fecha de fin es obligatoria', level: 'error' }
+  if (!startState.msg && startTs > now)
+    startState = { msg: 'Parece que esta fecha es futura', level: 'error' }
+  if (!endState.msg && endTs > now)
+    endState = { msg: 'Parece que esta fecha es futura', level: 'error' }
+  if (!startState.msg && !endState.msg && startTs > endTs)
+    endState = { msg: 'Parece que el fin ocurre antes del inicio', level: 'error' }
+  if (!startState.msg && !endState.msg && startTs === endTs)
+    endState = { msg: '¿La migraña duró menos de un minuto?', level: 'warning' }
+
+  return { startState, endState }
+}
 // ─── Component ────────────────────────────────────────────────────────────────
 
 function ReviewScreen() {
@@ -203,32 +216,9 @@ function ReviewScreen() {
   }
 
   // ── Date validation ───────────────────────────────────────────────────────
-  type FieldState = { msg: string; level: 'error' | 'warning' | '' }
-
-  function validateDates(start: string, end: string): { startState: FieldState; endState: FieldState } {
-    const now     = Date.now()
-    const startTs = Date.parse(start)
-    const endTs   = Date.parse(end)
-    let startState: FieldState = { msg: '', level: '' }
-    let endState:   FieldState = { msg: '', level: '' }
-
-    if (!start || isNaN(startTs))
-      startState = { msg: 'La fecha de inicio es obligatoria', level: 'error' }
-    if (!end || isNaN(endTs))
-      endState   = { msg: 'La fecha de fin es obligatoria', level: 'error' }
-    if (!startState.msg && startTs > now)
-      startState = { msg: 'Parece que esta fecha es futura', level: 'error' }
-    if (!endState.msg && endTs > now)
-      endState = { msg: 'Parece que esta fecha es futura', level: 'error' }
-    if (!startState.msg && !endState.msg && startTs > endTs)
-      endState = { msg: 'Parece que el fin ocurre antes del inicio', level: 'error' }
-    if (!startState.msg && !endState.msg && startTs === endTs)
-      endState = { msg: '¿La migraña duró menos de un minuto?', level: 'warning' }
-
-    return { startState, endState }
-  }
-
-  const { startState, endState } = validateDates(startTime, endTime)
+  // eslint-disable-next-line react-hooks/purity -- useRef(Date.now()) is idiomatic for "time at mount"
+  const mountTime = useRef(Date.now())
+  const { startState, endState } = validateDates(startTime, endTime, mountTime.current)
   const hasDateErrors = startState.level === 'error' || endState.level === 'error'
 
   // Guard: redirect on direct URL access without valid state

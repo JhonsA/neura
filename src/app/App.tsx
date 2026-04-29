@@ -5,7 +5,6 @@ import {
   LastMigraineCard,
   MigraineButton,
   WaveBackground,
-  useInitMigraine,
 } from '@/features/migraine'
 import { useAppSelector } from '@/app/hooks'
 import AvatarButton from '@/shared/components/AvatarButton'
@@ -13,8 +12,6 @@ import AvatarButton from '@/shared/components/AvatarButton'
 const WAVE_ANIMATED = import.meta.env.VITE_WAVE_ANIMATED === 'true'
 
 function App() {
-  useInitMigraine()
-
   const isCrisis = useAppSelector((state) => state.migraine.activeSession !== null)
 
   return (

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Pencil, Trash2 } from 'lucide-react'
 
@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { deleteEvent } from '@/features/migraine/migraineSlice'
 import { Pagination } from '@/shared/components/Pagination'
 import type { MigraineEvent } from '@/features/migraine/types'
+import { formatDuration, intensityColor } from '@/features/migraine/utils'
 import WaveBackground from './WaveBackground'
 
 const PAGE_SIZE = 5
@@ -21,27 +22,13 @@ function formatTime(iso: string): string {
   return new Date(iso).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })
 }
 
-function formatDuration(startIso: string, endIso?: string): string {
-  if (!endIso) return ''
-  const secs = Math.max(0, Math.round((Date.parse(endIso) - Date.parse(startIso)) / 1000))
-  const h = Math.floor(secs / 3600)
-  const m = Math.floor((secs % 3600) / 60)
-  if (h > 0 && m > 0) return `${h}h ${m}min`
-  if (h > 0) return `${h}h`
-  if (m > 0) return `${m} min`
-  return `${secs} seg`
-}
-
-function intensityColor(n: number | null): string {
-  if (n === null) return 'var(--c-text-muted)'
-  if (n <= 3) return '#6db8a0'
-  if (n <= 6) return '#d4a84b'
-  return '#c26b6b'
-}
-
 // ─── Card ─────────────────────────────────────────────────────────────────────
 
-function HistoryCard({ event, onEdit, onDelete }: { event: MigraineEvent; onEdit: () => void; onDelete: () => void }) {
+const HistoryCard = memo(function HistoryCard({ event, onEdit, onDelete }: {
+  event: MigraineEvent
+  onEdit: (id: string) => void
+  onDelete: (id: string) => void
+}) {
   const [confirming, setConfirming] = useState(false)
   const duration = formatDuration(event.createdAt, event.endedAt)
 
@@ -71,7 +58,7 @@ function HistoryCard({ event, onEdit, onDelete }: { event: MigraineEvent; onEdit
             <button
               className="history-card-edit-btn"
               type="button"
-              onClick={onEdit}
+              onClick={() => onEdit(event.id)}
               aria-label="Editar registro"
             >
               <Pencil size={13} strokeWidth={1.8} />
@@ -92,7 +79,7 @@ function HistoryCard({ event, onEdit, onDelete }: { event: MigraineEvent; onEdit
         <div className="history-card-confirm">
           <span className="history-card-confirm-text">¿Eliminar este registro?</span>
           <div className="history-card-confirm-actions">
-            <button className="history-confirm-btn history-confirm-btn--danger" type="button" onClick={onDelete}>
+            <button className="history-confirm-btn history-confirm-btn--danger" type="button" onClick={() => onDelete(event.id)}>
               Eliminar
             </button>
             <button className="history-confirm-btn" type="button" onClick={() => setConfirming(false)}>
@@ -103,7 +90,7 @@ function HistoryCard({ event, onEdit, onDelete }: { event: MigraineEvent; onEdit
       )}
     </article>
   )
-}
+})
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
@@ -116,9 +103,13 @@ function HistoryScreen() {
   const totalPages = Math.max(1, Math.ceil(events.length / PAGE_SIZE))
   const slice      = events.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE)
 
-  const handleEdit = (id: string) => {
+  const handleEdit = useCallback((id: string) => {
     navigate(`/review/${id}`, { state: { returnTo: '/history' } })
-  }
+  }, [navigate])
+
+  const handleDelete = useCallback((id: string) => {
+    dispatch(deleteEvent(id))
+  }, [dispatch])
 
   return (
     <main className="neura-screen" aria-label="Historial de migrañas">
@@ -142,8 +133,8 @@ function HistoryScreen() {
                 <HistoryCard
                   key={event.id}
                   event={event}
-                  onEdit={() => handleEdit(event.id)}
-                  onDelete={() => dispatch(deleteEvent(event.id))}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
                 />
               ))}
             </div>

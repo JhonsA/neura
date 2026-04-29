@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSelector, createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
 import type { MigraineEvent } from './types'
@@ -99,5 +99,12 @@ export const {
   cancelReview,
   deleteEvent,
 } = migraineSlice.actions
+
+// ─── Selectors ──────────────────────────────────────────────────────────────────
+
+export const selectLastEvent = createSelector(
+  (state: { migraine: MigraineState }) => state.migraine.events,
+  (events) => events[0] ?? null,
+)
 
 export default migraineSlice.reducer
