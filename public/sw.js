@@ -38,11 +38,11 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return
 
   if (request.mode === 'navigate') {
-    // Network-first for HTML navigation; fall back to cached shell
+    // Cache-first for navigation: always serve the cached app shell.
+    // For a SPA the HTML never changes between visits (assets are hashed),
+    // so going to the network first only adds latency and breaks offline.
     event.respondWith(
-      fetch(request).catch(() =>
-        caches.match('/').then((cached) => cached ?? Response.error())
-      )
+      caches.match('/').then((cached) => cached ?? fetch(request))
     )
   } else {
     // Cache-first for static assets (JS, CSS, fonts, images)
