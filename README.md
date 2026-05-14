@@ -11,6 +11,18 @@ Neura es una app web para registrar migrañas con la menor fricción posible. Es
 - Permite editar o eliminar registros existentes.
 - Mantiene los datos en el dispositivo mediante Redux Persist.
 
+## Capturas
+
+Neura está diseñada como una experiencia mobile-first, calmada y de baja carga visual para registrar episodios incluso durante una crisis.
+
+| Inicio | Migraña activa |
+|---|---|
+| ![Pantalla inicial de Neura](docs/screenshots/home-idle.png) | ![Pantalla con migraña activa](docs/screenshots/home-active.png) |
+
+| Detalles | Contexto | Historial |
+|---|---|---|
+| ![Formulario de detalles de migraña](docs/screenshots/review-main.png) | ![Formulario con contexto adicional](docs/screenshots/review-context.png) | ![Historial de migrañas](docs/screenshots/history.png) |
+
 ## Flujo Principal
 
 1. La persona toca `Tengo migraña` cuando comienza un episodio.
