@@ -2,6 +2,8 @@
 
 Neura es una app web para registrar migrañas con la menor fricción posible. Está pensada para usarse incluso durante una crisis: la pantalla principal prioriza un único CTA, "Tengo migraña", para iniciar el registro en segundos.
 
+Demo: [relaxed-nasturtium-db5011.netlify.app](https://relaxed-nasturtium-db5011.netlify.app/)
+
 ## Qué Hace
 
 - Inicia una sesión de migraña con un toque.
