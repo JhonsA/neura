@@ -32,7 +32,7 @@ npm run build:waves-off  # Build without wave animation
 
 - **Wave animation**: Controlled by `VITE_WAVE_ANIMATED` env var (default: `true` in `.env`)
 - **No tests**: No test framework configured. Do not add tests unless explicitly requested.
-- **Design guide**: `README.md` is the source of truth for visual/design decisions — it's a detailed style guide, not a project intro.
+- **Design guide**: `.agents/skills/neura-design/SKILL.md` is the source of truth for visual/design decisions. Use it before changing UI, layout, colors, typography, hierarchy, or component styling.
 
 ## Pre-commit Checklist
 
@@ -43,5 +43,5 @@ Before committing, verify:
 ## Important Constraints
 
 - The app is designed for people with active migraine — prioritize low cognitive load, avoid high contrast, don't add new visual elements
-- Only use colors defined in `README.md` design tokens
+- Only use colors defined in `.agents/skills/neura-design/SKILL.md` and `src/styles/index.css`
 - Keep the "I have migraine" CTA as the most prominent element
