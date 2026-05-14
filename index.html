@@ -2,9 +2,46 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neura</title>
+    <title>Neura – Registro de migrañas</title>
+    <meta name="description" content="Registra tus migrañas en segundos, entiende tus patrones y recupera el control. App diseñada para crisis: simple, oscura, sin distracciones." />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- PWA -->
+    <meta name="theme-color" content="#0f1319" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Neura" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Neura – Registro de migrañas" />
+    <meta property="og:description" content="Registra tus migrañas en segundos, entiende tus patrones y recupera el control." />
+    <meta property="og:image" content="/icons/icon-512.png" />
+    <meta property="og:locale" content="es" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Neura",
+      "description": "Registra tus migrañas en segundos, entiende tus patrones y recupera el control.",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      }
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

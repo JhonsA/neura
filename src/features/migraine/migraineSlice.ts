@@ -1,21 +1,14 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSelector, createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
 import type { MigraineEvent } from './types'
 
 // ─── State shape ─────────────────────────────────────────────────────────────
 
-/** Times held during the review + form flow, before final commit */
+/** Times held during the new-record flow, before final commit */
 export type PendingEvent = {
-  /** Set when editing an already-saved event; absent when recording a new one */
-  id?:              string
-  createdAt:        string
-  endedAt:          string
-  /** Pre-filled when editing an existing event; null when previously skipped */
-  intensity?:       number | null
-  location?:        MigraineEvent['location'] | null
-  medication?:      MigraineEvent['medication'] | null
-  medicationOther?: MigraineEvent['medicationOther'] | null
+  createdAt: string
+  endedAt:   string
 }
 
 type MigraineState = {
@@ -23,7 +16,7 @@ type MigraineState = {
   events: MigraineEvent[]
   /** ISO timestamp of the ongoing session; null when idle */
   activeSession: string | null
-  /** Filled when user presses "Terminar" — awaiting review/form confirmation */
+  /** Set when user presses "Terminar" — holds session times until committed */
   pendingEvent: PendingEvent | null
 }
 
@@ -57,57 +50,44 @@ export const migraineSlice = createSlice({
     },
 
     /**
-     * Commits the pending event with all form data (times + intensity + location).
-     * All values come from the form's local state — Redux is never updated mid-flow.
-     * If pendingEvent.id is set, updates the existing event instead of creating a new one.
-     * Clears pendingEvent. Navigation to / is handled by the caller.
+     * Commits form data to the events list.
+     * - No `id` in payload → new record (requires pendingEvent for times, clears it).
+     * - `id` present → update existing record directly (no pendingEvent involved).
      */
     commitEvent(
       state,
       action: PayloadAction<{
+        id?: string
         createdAt: string
         endedAt: string
         intensity: number | null
         location: MigraineEvent['location']
         medication: MigraineEvent['medication']
         medicationOther: MigraineEvent['medicationOther']
+        context: MigraineEvent['context']
       }>,
     ) {
-      if (!state.pendingEvent) return
-      const { id } = state.pendingEvent
-      const { createdAt, endedAt, intensity, location, medication, medicationOther } = action.payload
+      const { id, createdAt, endedAt, intensity, location, medication, medicationOther, context } = action.payload
       if (id) {
         const idx = state.events.findIndex((e) => e.id === id)
         if (idx !== -1) {
-          state.events[idx] = { id, createdAt, endedAt, intensity, location, medication, medicationOther }
+          state.events[idx] = { id, createdAt, endedAt, intensity, location, medication, medicationOther, context }
         }
       } else {
-        state.events.unshift({ id: crypto.randomUUID(), createdAt, endedAt, intensity, location, medication, medicationOther })
+        if (!state.pendingEvent) return
+        state.events.unshift({ id: crypto.randomUUID(), createdAt, endedAt, intensity, location, medication, medicationOther, context })
+        state.pendingEvent = null
       }
-      state.pendingEvent = null
     },
 
-    /** Cancels the review/edit flow and discards the pending event. */
+    /** Discards the pending new-record event (user cancels before committing). */
     cancelReview(state) {
       state.pendingEvent = null
     },
 
-    /**
-     * Loads an existing saved event into pendingEvent so the user can
-     * edit its times and intensity/location via the Review + Form screens.
-     */
-    loadEventForEdit(state, action: PayloadAction<string>) {
-      const event = state.events.find((e) => e.id === action.payload)
-      if (!event) return
-      state.pendingEvent = {
-        id:              event.id,
-        createdAt:       event.createdAt,
-        endedAt:         event.endedAt ?? new Date().toISOString(),
-        intensity:       event.intensity,
-        location:        event.location,
-        medication:      event.medication,
-        medicationOther: event.medicationOther,
-      }
+    /** Permanently removes an event by id. */
+    deleteEvent(state, action: PayloadAction<string>) {
+      state.events = state.events.filter((e) => e.id !== action.payload)
     },
   },
 })
@@ -117,7 +97,14 @@ export const {
   beginReview,
   commitEvent,
   cancelReview,
-  loadEventForEdit,
+  deleteEvent,
 } = migraineSlice.actions
+
+// ─── Selectors ──────────────────────────────────────────────────────────────────
+
+export const selectLastEvent = createSelector(
+  (state: { migraine: MigraineState }) => state.migraine.events,
+  (events) => events[0] ?? null,
+)
 
 export default migraineSlice.reducer

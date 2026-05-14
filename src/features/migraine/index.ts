@@ -1,6 +1,4 @@
 export { default as MigraineButton } from './components/MigraineButton'
 export { default as LastMigraineCard } from './components/LastMigraineCard'
 export { default as WaveBackground } from './components/WaveBackground'
-export { default as ReviewScreen } from './components/ReviewScreen'
-export { useInitMigraine } from './hooks/useInitMigraine'
 export type { MigraineEvent } from './types'

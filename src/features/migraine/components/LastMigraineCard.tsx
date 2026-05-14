@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom'
 
 import { Activity, CalendarDays, ChevronRight } from 'lucide-react'
 
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { loadEventForEdit } from '@/features/migraine/migraineSlice'
+import { useAppSelector } from '@/app/hooks'
+import { selectLastEvent } from '@/features/migraine/migraineSlice'
 
 function formatElapsed(startIso: string): string {
   const elapsed = Math.max(0, Math.floor((Date.now() - Date.parse(startIso)) / 1000))
@@ -22,32 +22,22 @@ function getSmartTime(isoDate: string): string {
   const ts = Date.parse(isoDate)
   if (Number.isNaN(ts)) return 'Fecha no disponible'
 
-  const now    = Date.now()
-  const diff   = now - ts
-  const mins   = Math.floor(diff / 60_000)
+  const diff = Date.now() - ts
+  const mins = Math.floor(diff / 60_000)
+  const hours = Math.floor(diff / 3_600_000)
 
-  if (mins < 1)  return 'hace unos segundos'
-  if (mins < 60) return `hace ${mins} min`
+  if (mins < 1)   return 'hace unos segundos'
+  if (mins < 60)  return `hace ${mins} min`
+  if (hours < 24) return hours === 1 ? 'hace 1 hora' : `hace ${hours} horas`
 
-  // Same calendar day → "Hoy, HH:MM"
   const date = new Date(ts)
   const today = new Date()
-  const timeStr = date.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })
 
-  if (date.toDateString() === today.toDateString()) {
-    return `Hoy, ${timeStr}`
-  }
-
-  // Yesterday
   const yesterday = new Date(today)
   yesterday.setDate(today.getDate() - 1)
-  if (date.toDateString() === yesterday.toDateString()) {
-    return `Ayer, ${timeStr}`
-  }
+  if (date.toDateString() === yesterday.toDateString()) return 'ayer'
 
-  // Older → "Lun 7 abr, HH:MM"
-  const dayStr = date.toLocaleDateString('es', { weekday: 'short', day: 'numeric', month: 'short' })
-  return `${dayStr}, ${timeStr}`
+  return date.toLocaleDateString('es', { weekday: 'short', day: 'numeric', month: 'short' })
 }
 
 function getDuration(startIso: string, endIso?: string): string {
@@ -62,29 +52,38 @@ function getDuration(startIso: string, endIso?: string): string {
 
 function LastMigraineCard() {
   const navigate      = useNavigate()
-  const dispatch      = useAppDispatch()
   const activeSession = useAppSelector((state) => state.migraine.activeSession)
-  const lastEvent     = useAppSelector((state) => state.migraine.events[0])
+  const lastEvent     = useAppSelector(selectLastEvent)
   const [, tick] = useState(0)
 
-  // 1-second ticker for the live crisis counter
+  // Ticker for the live crisis counter only — "última migraña" doesn't need one
+  // because it's a static glance value, recalculated on each render/navigation.
   useEffect(() => {
     if (!activeSession) return
     const id = setInterval(() => tick((n) => n + 1), 1_000)
     return () => clearInterval(id)
   }, [activeSession])
 
-  // 1-minute ticker for the "hace X min" relative label.
-  // Stops automatically once the event is older than 60 min (label switches to "Hoy, HH:MM").
+  // Adaptive ticker for the "última migraña" relative label.
+  // Interval shrinks when the event is recent, grows when it's old.
+  // Stops entirely once >= 24h (label becomes static "ayer" / date).
   useEffect(() => {
     if (activeSession || !lastEvent) return
-    const age = Date.now() - Date.parse(lastEvent.createdAt)
-    if (age >= 60 * 60_000) return          // already showing fixed time, no need
-    const id = setInterval(() => {
-      tick((n) => n + 1)
-    }, 60_000)
+    const endTs = Date.parse(lastEvent.endedAt ?? lastEvent.createdAt)
+    const age   = Date.now() - endTs
+    const hours = age / 3_600_000
+
+    // Already showing a static date — no ticker needed
+    if (hours >= 24) return
+
+    // < 1h: update every 30s so "hace X min" stays accurate
+    // 1–24h: update every 5min so "hace X horas" stays accurate
+    const interval = hours < 1 ? 30_000 : 5 * 60_000
+    const id = setInterval(() => tick((n) => n + 1), interval)
     return () => clearInterval(id)
   }, [activeSession, lastEvent])
+
+
 
   if (activeSession) {
     return (
@@ -116,12 +115,11 @@ function LastMigraineCard() {
     )
   }
 
-  const smartTime = getSmartTime(lastEvent.createdAt)
+  const smartTime = getSmartTime(lastEvent.endedAt ?? lastEvent.createdAt)
   const duration  = getDuration(lastEvent.createdAt, lastEvent.endedAt)
 
   const handleEditClick = () => {
-    dispatch(loadEventForEdit(lastEvent.id))
-    navigate('/review')
+    navigate(`/review/${lastEvent.id}`)
   }
 
   return (

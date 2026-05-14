@@ -7,8 +7,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:waves-on": "tsc -b && VITE_WAVE_ANIMATED=true vite build",
-    "build:waves-off": "tsc -b && VITE_WAVE_ANIMATED=false vite build",
+    "build:waves-on": "tsc -b && vite build",
+    "build:waves-off": "tsc -b && vite build --mode waves-off",
     "lint": "eslint .",
     "preview": "vite preview"
   },

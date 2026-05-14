@@ -339,6 +339,250 @@ body {
   opacity: 0.75;
 }
 
+/* ── History link ───────────────────────────────────────── */
+.neura-history-link {
+  align-self: flex-end;
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--c-text-muted);
+  opacity: 0.6;
+  text-decoration: none;
+  transition: opacity 0.15s;
+  position: relative;
+  z-index: 1;
+}
+.neura-history-link:hover { opacity: 1; }
+
+/* ── History screen ─────────────────────────────────────── */
+.history-empty {
+  text-align: center;
+  color: var(--c-text-muted);
+  font-size: 0.9rem;
+  padding: 32px 0;
+}
+
+.history-total {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--c-text-muted);
+  opacity: 0.5;
+  margin: 8px 0 4px;
+  letter-spacing: 0.03em;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.history-card {
+  background: rgba(25, 31, 55, 0.6);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-card);
+  padding: 14px 16px;
+}
+
+.history-card-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.history-card-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.history-card-date {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--c-text-muted);
+  text-transform: capitalize;
+}
+
+.history-card-time {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--c-text-strong);
+}
+
+.history-card-duration {
+  font-size: 0.75rem;
+  color: var(--c-text-muted);
+}
+
+.history-card-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.history-card-intensity-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.history-card-intensity-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-text-muted);
+  opacity: 0.7;
+}
+
+.history-card-intensity {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.history-card-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.history-card-edit-btn {
+  display: grid;
+  place-items: center;
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: var(--c-text-muted);
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s, background 0.15s;
+}
+.history-card-edit-btn:hover {
+  opacity: 1;
+  background: var(--c-surface-2);
+}
+
+.history-card-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px 12px;
+  border-top: 1px solid var(--c-border);
+  gap: 12px;
+}
+
+.history-card-confirm-text {
+  font-size: 0.8rem;
+  color: var(--c-text-muted);
+}
+
+.history-card-confirm-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.history-confirm-btn {
+  padding: 5px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--c-border);
+  background: transparent;
+  color: var(--c-text-muted);
+  font-size: 0.8rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.history-confirm-btn:hover {
+  background: var(--c-surface-2);
+  color: var(--c-text-strong);
+}
+.history-confirm-btn--danger {
+  color: #c26b6b;
+  border-color: rgba(194, 107, 107, 0.35);
+}
+.history-confirm-btn--danger:hover {
+  background: rgba(194, 107, 107, 0.15);
+  color: #c26b6b;
+}
+
+.pagination-root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+}
+
+.pagination-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pagination-arrow,
+.pagination-page {
+  display: grid;
+  place-items: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 6px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--c-text-muted);
+  font-size: 0.88rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  user-select: none;
+}
+
+.pagination-arrow {
+  font-size: 1.2rem;
+  border-color: var(--c-border);
+}
+
+.pagination-arrow:hover:not(:disabled),
+.pagination-page:hover:not(.pagination-page--active) {
+  background: var(--c-surface-2);
+  color: var(--c-text-strong);
+}
+
+.pagination-arrow:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.pagination-page--active {
+  background: var(--c-surface-2);
+  border-color: var(--c-border);
+  color: var(--c-text-strong);
+  font-weight: 600;
+  cursor: default;
+}
+
+.pagination-ellipsis {
+  display: grid;
+  place-items: center;
+  min-width: 28px;
+  height: 34px;
+  font-size: 0.75rem;
+  color: var(--c-text-muted);
+  opacity: 0.5;
+  letter-spacing: 0.1em;
+  user-select: none;
+}
+
+.pagination-total {
+  font-size: 0.72rem;
+  color: var(--c-text-muted);
+  opacity: 0.5;
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
 /* ── Crisis state ───────────────────────────────────────── */
 
 /* deco-wave turns soft crimson and animates faster */
@@ -483,6 +727,16 @@ body {
   color: var(--c-text-muted);
 }
 
+.review-duration-inline {
+  margin: 8px 0 0;
+  font-size: 0.8rem;
+  color: var(--c-text-muted);
+}
+.review-duration-inline strong {
+  color: var(--c-text-strong);
+  font-weight: 600;
+}
+
 /* ── Unified form card ─────────────────────────────────── */
 .review-form {
   width: 100%;
@@ -504,6 +758,22 @@ body {
   font-size: 0.85rem;
   font-weight: 500;
   color: var(--c-text-muted);
+}
+
+.review-context-toggle {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font);
+  transition: background 0.12s;
+}
+.review-context-toggle:hover {
+  background: rgba(60, 60, 109, 0.18);
 }
 
 .review-form-divider {
@@ -571,6 +841,24 @@ body {
   outline: 2px solid rgba(114, 128, 210, 0.5);
   outline-offset: 2px;
 }
+.review-time-input--error {
+  border-color: rgba(194, 107, 107, 0.6);
+}
+.review-time-input--error:focus {
+  outline-color: rgba(194, 107, 107, 0.3);
+}
+.review-time-input--warning {
+  border-color: rgba(212, 168, 75, 0.5);
+}
+.review-time-input--warning:focus {
+  outline-color: rgba(212, 168, 75, 0.25);
+}
+.review-time-feedback {
+  font-size: 0.75rem;
+  margin-top: 4px;
+}
+.review-time-feedback--error   { color: #c26b6b; }
+.review-time-feedback--warning { color: #d4a84b; }
 
 .review-edit-btn {
   align-self: center;
